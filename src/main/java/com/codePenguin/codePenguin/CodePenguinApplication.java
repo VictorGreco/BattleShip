@@ -25,14 +25,12 @@ public class CodePenguinApplication {
 
             Game Game1 = new Game(LocalDateTime.now());
             Game Game2 = new Game(LocalDateTime.now());
-            Game Game3 = new Game(LocalDateTime.now());
             // save a couple of players
             playerRepository.save(player1);
             playerRepository.save(player2);
 
             gameRepository.save(Game1);
             gameRepository.save(Game2);
-            gameRepository.save(Game3);
 
             gamePlayerRepository.save(new GamePlayer(Game1, player1, LocalDateTime.now()));
             gamePlayerRepository.save(new GamePlayer(Game1, player2, LocalDateTime.now()));
