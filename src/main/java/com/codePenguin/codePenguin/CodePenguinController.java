@@ -72,7 +72,4 @@ public class CodePenguinController {
         dto.put("location", ship.getShipPositions());
         return dto;
     }
-
-
-
 }
