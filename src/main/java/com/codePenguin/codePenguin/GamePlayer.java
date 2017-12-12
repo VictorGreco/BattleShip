@@ -1,13 +1,8 @@
 package com.codePenguin.codePenguin;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 public class GamePlayer {
@@ -23,6 +18,8 @@ public class GamePlayer {
     @JoinColumn(name="player_id")
     private Player player;
 
+    @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
+    Set<Ship> ships;
 
     private LocalDateTime joinDate;
 
@@ -34,13 +31,19 @@ public class GamePlayer {
         this.joinDate = joinDate;
     }
 
-    //      getter && setter methods
-    public Game getGame() {
-        return game;
+    //voiders!!
+    public void addShip(Ship ship) {
+        ship.setGamePlayer(this);
+        ships.add(ship);
     }
 
+    //      getter && setter methods
     public void setGame(Game game) {
         this.game = game;
+    }
+
+    public Game getGame() {
+        return game;
     }
 
     public Player getPlayer() {
@@ -51,22 +54,13 @@ public class GamePlayer {
         this.player = player;
     }
 
-    public LocalDateTime getJoinDate() {
-        return joinDate;
-    }
-
-    public void setJoinDate(LocalDateTime joinDate) {
-        this.joinDate = joinDate;
+    public Set<Ship> getShips() {
+        return ships;
     }
 
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    //other methods
 
 }

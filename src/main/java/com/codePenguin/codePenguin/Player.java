@@ -1,10 +1,7 @@
 package com.codePenguin.codePenguin;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
-
-import static java.util.stream.Collectors.toList;
 
 @Entity
 public class Player {
@@ -29,8 +26,6 @@ public class Player {
         gamePlayers.add(gamePlayer);
     }
 
-
-
     //      getter && setter methods
     public long getId() {
         return id;
@@ -43,11 +38,4 @@ public class Player {
     public void setUserName(String userName) {
         this.userName = userName;
     }
-
-
-    //other
-//    public List<Game> getGames() {
-//        return gamePlayers.stream().map(sub -> sub.getGame()).collect(toList());
-//    }
-
 }

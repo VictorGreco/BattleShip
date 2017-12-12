@@ -1,12 +1,8 @@
 package com.codePenguin.codePenguin;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
-
-import static java.util.stream.Collectors.toList;
 
 @Entity
 public class Game {
@@ -24,16 +20,14 @@ public class Game {
     public Game (LocalDateTime currentDate){
         this.creationDate = currentDate;
     }
-    // voids!!
 
+    // voids!!
     public void addGamePlay(GamePlayer gamePlayer) {
         gamePlayer.setGame(this);
         gamePlayers.add(gamePlayer);
     }
 
     //      getter && setter methods
-
-
     public Set<GamePlayer> getGamePlayers() {
         return gamePlayers;
     }
@@ -49,12 +43,4 @@ public class Game {
     public LocalDateTime getDate() {
         return creationDate;
     }
-
-    //other methods
-
-//    @JsonIgnore
-//    public List<Player> getPlayers() {
-//        return gamePlayers.stream().map(sub -> sub.getPlayer()).collect(toList());
-//    }
-
 }
