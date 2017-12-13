@@ -1,3 +1,9 @@
 .ship{
     background-color: red;
 }
+
+.displayPlayers{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-around;
+}

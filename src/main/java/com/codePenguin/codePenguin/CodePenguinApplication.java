@@ -39,7 +39,7 @@ public class CodePenguinApplication {
             List<String> destroyer_Loc = new ArrayList<>(Arrays.asList("B1", "B2", "B3"));
             List<String> submarine_Loc = new ArrayList<>(Arrays.asList("C1", "C2", "C3"));
             List<String> battleship_Loc = new ArrayList<>(Arrays.asList("D1", "D2", "D3","D4"));
-            List<String> carrier_Loc = new ArrayList<>(Arrays.asList("E1", "E2", "E3","E4","E5"));
+            List<String> carrier_Loc = new ArrayList<>(Arrays.asList("A7", "B7", "C7","D7","E7"));
 
             Ship patrolBoat = new Ship("PatrolBoat", patrolBoat_Loc, gamePlayer1);
             Ship destroyer = new Ship("Destroyer", destroyer_Loc, gamePlayer1);
@@ -48,6 +48,8 @@ public class CodePenguinApplication {
             Ship carrier = new Ship("Carrier", carrier_Loc, gamePlayer1);
 
             Ship patrolBoat2 = new Ship("PatrolBoat2", patrolBoat_Loc, gamePlayer2);
+            Ship carrier2 = new Ship("Carrier2", carrier_Loc, gamePlayer2);
+
 
 
             // save a couple of players
