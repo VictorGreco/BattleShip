@@ -45,6 +45,10 @@ public class CodePenguinController {
                 .stream()
                 .map( ship-> makeShipDTO(ship))
                 .collect(Collectors.toList()));
+        dto.put("AllSalvOfGame", myGame.getGamePlayers()
+                .stream()
+                .map(gamePlayer -> makeSalvoDTO(gamePlayer))
+                .collect(Collectors.toList()));
         return dto;
     }
 
@@ -70,6 +74,22 @@ public class CodePenguinController {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("type", ship.getType());
         dto.put("location", ship.getShipPositions());
+        return dto;
+    }
+
+    private Map<String, Object> makeSalvoDTO(GamePlayer gamePlayer){
+        Map<String, Object> dto = new LinkedHashMap<>();
+        dto.put("gamePlayerId", gamePlayer.getId());
+        dto.put("Salvoes", gamePlayer.getSalvoes()
+                    .stream()
+                    .map(salvo -> makeSalvoesDTO(salvo))
+                    .collect(Collectors.toList()));
+        return dto;
+    }
+    private Map<String, Object> makeSalvoesDTO(Salvo salvo){
+        Map<String, Object> dto = new LinkedHashMap<>();
+        dto.put("Turn", salvo.getTurnNumber());
+        dto.put("Locations", salvo.getSalvoLocations());
         return dto;
     }
 }

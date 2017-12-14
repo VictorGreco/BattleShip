@@ -9,20 +9,16 @@ $(function(){
     $.getJSON(url, function(data){
 
         getPlayersInfo(data);
-        getGrid(data, "myShipGrid");
-        getGrid(data, "notMySalvoGrid");
-        colorGrid(data);
-
+        getGrid(data);
+        colorShipsLocations(data);
     });
 //[END CALLS]
 
 //[FUNCTIONS]
-    function getGrid(data, tableId){
-        tableId = tableId+"";
-        console.log(tableId);
-        $("#"+tableId)
+    function getGrid(data){
+        $('#gridTable')
             .append(appendTr_thead())
-            .append(appendTr_tbody(data, tableId));
+            .append(appendTr_tbody(data));
     }
 
     function appendTr_thead(){
@@ -36,21 +32,21 @@ $(function(){
         return x;
     }
 
-    function appendTr_tbody(data, tableId){
+    function appendTr_tbody(data){
         var x = $('<tbody>');
         var headArray = ["A","B","C","D","E","F","G","H","I","J"];
         $(headArray).each(function(){
-            x.append(appendTd_Tr(this, tableId));
+            x.append(appendTd_Tr(this));
             });
         return x;
     }
 
-    function appendTd_Tr(current, tableId){
+    function appendTd_Tr(current){
         var x = $('<tr>');
             x.append($('<td>').append(current));
             for (let i = 1; i <= 10; i++){
                 i= ""+i +"";
-                x.append($('<td>',{"id": tableId+"_"+current+ i}));
+                x.append($('<td>',{"id": current + i}));
             }
         return x;
     }
@@ -63,36 +59,13 @@ $(function(){
         return x;
     }
 
-    function colorGrid(data){
-        colorMyShipsLocation(data);
-        colorAllSalvoes(data);
-    }
-
-    function colorAllSalvoes(data){
-        $(data.AllSalvOfGame).each(function(){
-            this.gamePlayerId === data.id ? colorSalvoPJ_Place(this, '#notMySalvoGrid_', 'mySalvo')
-            : colorSalvoPJ_Place(this, '#myShipGrid_', 'enemySalvo');
-        });
-    }
-
-    function colorSalvoPJ_Place(player, grid, theClass){
-        $(player.Salvoes).each(function(){
-            var Locations = this["Locations"];
-            var Turn = this["Turn"];
-            $(Locations).each(function(){
-                $(grid+this).hasClass('ship') == true ? console.log('Turn:'+Turn+ ", hit!") : console.log('Turn:'+Turn+ ", you faild!");
-                $(grid+this).addClass(theClass);
-            });
-        });
-    }
-
-    function colorMyShipsLocation(data){
+    function colorShipsLocations(data){
         $(data.Ships).each(function(){
-            $(this["location"]).each(function(){
-                $('#myShipGrid_'+this).addClass('ship');
-            });
-       });
-    }
+                    $(this["location"]).each(function(){
+                        $('#'+this).addClass('ship');
+                    });
+               });
+        }
 
     function getPlayersInfo(data){
        $(data.GamePlayers).each(function(){

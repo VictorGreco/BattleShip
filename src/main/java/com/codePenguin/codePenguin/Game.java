@@ -28,7 +28,6 @@ public class Game {
     }
 
     //      getter && setter methods
-
     public Set<GamePlayer> getGamePlayers() {
         return gamePlayers;
     }

@@ -21,6 +21,7 @@ function createGamesList (data) {
         currentPlayer = currentPlayer.split(" ");
         currentPlayer = currentPlayer[0]+ " -vs- " + currentPlayer[1];
         console.log(currentPlayer);
+
         $('#gamesList').append($('<li>').append(currentPlayer));
 
         });
