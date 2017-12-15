@@ -5,13 +5,43 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Games Page</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
 </head>
 <body>
+    <main class="container">
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">CodePenguin</a>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Games</a></li>
+                    <li class="active"><a href="/web/game_view.html?gp=1">GameViews</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                </ul>
+            </div>
+        </nav>        <aside class="row">
+            <div class="col-lg-6">
+                <ol id="gamesList" class="list-group"></ol>
+            </div>
+            <div class="col-lg-6">
+                <article class="table-responsive">
+                    <table id="rankings" class="table"></table>
+                </article>
+            </div>
+        </aside>
 
-<ol id="gamesList"></ol>
+    </main>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="games.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="games.js"></script>
 </body>
 </html>

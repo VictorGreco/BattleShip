@@ -47,7 +47,7 @@ public class CodePenguinController {
                 .collect(Collectors.toList()));
         dto.put("AllSalvOfGame", myGame.getGamePlayers()
                 .stream()
-                .map(gamePlayer -> makeSalvoDTO(gamePlayer))
+                .map(gamePlayer -> makeSalvoesDTO(gamePlayer))
                 .collect(Collectors.toList()));
         return dto;
     }
@@ -60,13 +60,32 @@ public class CodePenguinController {
                 .stream()
                 .map(gamePlayer -> makeGamePlayDTO(gamePlayer))
                 .collect(Collectors.toList()));
+        dto.put("Scores", game.getScores()
+                .stream()
+                .map(score -> makeScoreDTO(score))
+                .collect(Collectors.toList()));
         return dto;
     }
 
     private Map<String, Object> makeGamePlayDTO(GamePlayer gamePlayer) {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("id", gamePlayer.getId());
-        dto.put("Player", gamePlayer.getPlayer());
+        dto.put("Player", getMakePlayerDTO(gamePlayer.getPlayer()));
+        return dto;
+    }
+
+    private Map<String, Object> getMakePlayerDTO(Player player){
+        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        dto.put("pId", player.getId());
+        dto.put("name", player.getUserName());
+        return dto;
+    }
+
+    private Map<String, Object> makeScoreDTO(Score score){
+        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        dto.put("pId", score.getPlayer().getId());
+        dto.put("name", score.getPlayer().getUserName());
+        dto.put("Points", score.getScore());
         return dto;
     }
 
@@ -77,16 +96,16 @@ public class CodePenguinController {
         return dto;
     }
 
-    private Map<String, Object> makeSalvoDTO(GamePlayer gamePlayer){
+    private Map<String, Object> makeSalvoesDTO(GamePlayer gamePlayer){
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("gamePlayerId", gamePlayer.getId());
         dto.put("Salvoes", gamePlayer.getSalvoes()
                     .stream()
-                    .map(salvo -> makeSalvoesDTO(salvo))
+                    .map(salvo -> makeSalvoDTO(salvo))
                     .collect(Collectors.toList()));
         return dto;
     }
-    private Map<String, Object> makeSalvoesDTO(Salvo salvo){
+    private Map<String, Object> makeSalvoDTO(Salvo salvo){
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("Turn", salvo.getTurnNumber());
         dto.put("Locations", salvo.getSalvoLocations());

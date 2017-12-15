@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @SpringBootApplication
@@ -23,7 +24,8 @@ public class CodePenguinApplication {
                                       GameRepository gameRepository,
                                       GamePlayerRepository gamePlayerRepository,
                                       ShipRepository shipRepository,
-                                      SalvoRepository salvoRepository)
+                                      SalvoRepository salvoRepository,
+                                      ScoreRepository scoreRepository)
     {
         return (args) -> {
             // PLAYERS
@@ -31,15 +33,29 @@ public class CodePenguinApplication {
             Player player2 = new Player("victor@gmail.com");
             Player player3 = new Player("aslamasda@gmail.com");
 
+            //DATES
+            Date date1 = new Date();
+            Date date2 = new Date();
+                date2= Date.from(date2.toInstant().plusSeconds(3600));
+            Date date3 = new Date();
+                date3= Date.from(date3.toInstant().plusSeconds(7200));
+
             //GAMES
-            Game Game1 = new Game(LocalDateTime.now());
-            Game Game2 = new Game(LocalDateTime.now());
+            Game game1 = new Game(date1);
+            Game game2 = new Game(date2);
+            Game game3 = new Game(date3);
+
+
 
             //GAMEPLAYERS
-            GamePlayer gamePlayer1 = new GamePlayer(Game1, player1, LocalDateTime.now());
-            GamePlayer gamePlayer2 = new GamePlayer(Game1, player2, LocalDateTime.now());
-            GamePlayer gamePlayer3 = new GamePlayer(Game2, player2, LocalDateTime.now());
-            GamePlayer gamePlayer4 = new GamePlayer(Game2, player3, LocalDateTime.now());
+            GamePlayer gamePlayer1 = new GamePlayer(game1, player1, new Date());
+            GamePlayer gamePlayer2 = new GamePlayer(game1, player2, new Date());
+
+            GamePlayer gamePlayer3 = new GamePlayer(game2, player2, new Date());
+            GamePlayer gamePlayer4 = new GamePlayer(game2, player3, new Date());
+
+            GamePlayer gamePlayer5 = new GamePlayer(game3, player1, new Date());
+            GamePlayer gamePlayer6 = new GamePlayer(game3, player3, new Date());
 
             //SHIPS POSITIONS
             List<String> patrolBoat_Loc = new ArrayList<>(Arrays.asList("A1", "A2"));
@@ -59,7 +75,7 @@ public class CodePenguinApplication {
             Ship carrier2 = new Ship("Carrier2", carrier_Loc, gamePlayer2);
 
             //SALVOES POSITIONS
-            List<String> turn1Player1SalvoPos = new ArrayList<>(Arrays.asList("J1", "C7", "J3"));
+            List<String> turn1Player1SalvoPos = new ArrayList<>(Arrays.asList("J1", "B7", "J3"));
             List<String> turn1Player2SalvoPos = new ArrayList<>(Arrays.asList("I1", "C7", "I3"));
 
             List<String> turn2Player1SalvoPos = new ArrayList<>(Arrays.asList("J4", "J5", "J6"));
@@ -78,6 +94,18 @@ public class CodePenguinApplication {
             Salvo turn3Player1 = new Salvo(3, gamePlayer1, turn3Player1SalvoPos);
             Salvo turn3Player2 = new Salvo(3, gamePlayer2, turn3Player2SalvoPos);
 
+            //SCORES
+            Score scoreGame1Player1 = new Score(0, game1, player1, new Date());
+            Score scoreGame1Player2 = new Score(2, game1, player2, new Date());
+
+            Score scoreGame2Player2 = new Score(2, game2, player2, new Date());
+            Score scoreGame2Player3 = new Score(0, game2, player3, new Date());
+
+            Score scoreGame3Player1 = new Score(1, game3, player1, new Date());
+            Score scoreGame3Player3 = new Score(1, game3, player3, new Date());
+
+
+
 
             // PLAYER REPOSITORY
             playerRepository.save(player1);
@@ -85,14 +113,17 @@ public class CodePenguinApplication {
             playerRepository.save(player3);
 
             // GAMES REPOSITORY
-            gameRepository.save(Game1);
-            gameRepository.save(Game2);
+            gameRepository.save(game1);
+            gameRepository.save(game2);
+            gameRepository.save(game3);
 
             // GAMEPLAYERS REPOSITORY
             gamePlayerRepository.save(gamePlayer1);
             gamePlayerRepository.save(gamePlayer2);
             gamePlayerRepository.save(gamePlayer3);
             gamePlayerRepository.save(gamePlayer4);
+            gamePlayerRepository.save(gamePlayer5);
+            gamePlayerRepository.save(gamePlayer6);
 
             // SHIPS REPOSITORY
             shipRepository.save(patrolBoat);
@@ -113,6 +144,17 @@ public class CodePenguinApplication {
 
             salvoRepository.save(turn3Player1);
             salvoRepository.save(turn3Player2);
+
+            // SCORES REPOSITORY
+            scoreRepository.save(scoreGame1Player1);
+            scoreRepository.save(scoreGame1Player2);
+
+            scoreRepository.save(scoreGame2Player2);
+            scoreRepository.save(scoreGame2Player3);
+
+            scoreRepository.save(scoreGame3Player1);
+            scoreRepository.save(scoreGame3Player3);
+
         };
     }
 }

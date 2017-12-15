@@ -5,21 +5,47 @@ $(function(){
     gpValue = urlSplited[1];
     url = "http://localhost:8080/api/game_view/"+ gpValue+"";
 
+//[STARTS RANDOM BACKGROUND]
+    var images = ['background-image1.jpg', 'background-image2.jpg', 'background-image3.jpg', 'background-image4.jpg'];
+    $('body').css({'background-image': 'url(resources/' + images[Math.floor(Math.random() * images.length)] + ')'})
+             .css({'background-size':'cover',
+                   'background-repeat': 'no-repeat'});
+//[ENDS RANDOM BACKGROUND]
+
 //[START CALLS]
     $.getJSON(url, function(data){
-
         getPlayersInfo(data);
         getGrid(data, "myShipGrid");
         getGrid(data, "notMySalvoGrid");
         colorGrid(data);
-
+        onClickSomeTd();
     });
 //[END CALLS]
+
+//[USER INTERACTION FUNCTIONS]
+    function onClickSomeTd(){
+    var clickedCellNumber;
+    var clickedTable;
+    var clickedTdID;
+        $('td').click(function(){
+             clickedItemID = this.id.split('_');
+             clickedCellNumber = clickedItemID[1];
+             clickedTable = clickedItemID[0];
+
+            wantToFire(clickedCellNumber, clickedTable);
+
+        });
+    }
+
+    function wantToFire(place, tableIdent){
+        console.log(place);
+        console.log(tableIdent);
+        tableIdent == "notMySalvoGrid" ? alert("Do you want to fire on: " +place) : alert("You can't fire on your grid!");
+    }
 
 //[FUNCTIONS]
     function getGrid(data, tableId){
         tableId = tableId+"";
-        console.log(tableId);
         $("#"+tableId)
             .append(appendTr_thead())
             .append(appendTr_tbody(data, tableId));
@@ -80,30 +106,40 @@ $(function(){
             var Locations = this["Locations"];
             var Turn = this["Turn"];
             $(Locations).each(function(){
-                $(grid+this).hasClass('ship') == true ? console.log('Turn:'+Turn+ ", hit!") : console.log('Turn:'+Turn+ ", you faild!");
-                $(grid+this).addClass(theClass);
+                var currentLocation = $(grid+this);
+                currentLocation.addClass(theClass);
+                if(currentLocation.hasClass('ship enemySalvo')== true){
+                    currentLocation.addClass('hit');
+                }else{
+                    if(currentLocation.hasClass('enemySalvo')==true){
+                        currentLocation.addClass('notHit');
+                    }
+                }
             });
         });
     }
 
     function colorMyShipsLocation(data){
         $(data.Ships).each(function(){
-            $(this["location"]).each(function(){
-                $('#myShipGrid_'+this).addClass('ship');
-            });
+            var shipLocation = this["location"];
+            for(let i = 0; i< shipLocation.length; i++){
+                i == 0 ? $('#myShipGrid_'+shipLocation[i]).addClass('shipProa'): "";
+                i == shipLocation.length - 1 ? $('#myShipGrid_'+shipLocation[i]).addClass('shipPopa') : "";
+                i != shipLocation.length - 1 && i != 0 ? $('#myShipGrid_'+shipLocation[i]).addClass('shipMiddle') : "";
+            }
        });
     }
 
     function getPlayersInfo(data){
        $(data.GamePlayers).each(function(){
                if(data.id === this.id){
-                   let ownerPlayer = this.Player.userName + "(you)";
+                   let ownerPlayer = this.Player["name"] + "(you)";
                    $('#displayPlayers').append($('<div>', {
                                                     "id": "ownerPlayer",
                                                     "class": "ownerPlayer",
                                                     }).append(ownerPlayer));
                }else{
-                   let otherPlayer = this.Player.userName;
+                   let otherPlayer = this.Player["name"];
                    $('#displayPlayers').append($('<div>',{
                                                     "id": "notOwnerPlayer",
                                                     "class": "notOwnerPlayer",

@@ -1,7 +1,7 @@
 package com.codePenguin.codePenguin;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -24,11 +24,11 @@ public class GamePlayer {
     @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
     Set<Salvo> salvoes;
 
-    private LocalDateTime joinDate;
+    private Date joinDate;
 
     public GamePlayer(){}
 
-    public GamePlayer(Game game, Player player ,LocalDateTime joinDate) {
+    public GamePlayer(Game game, Player player ,Date joinDate) {
         this.game = game;
         this.player = player;
         this.joinDate = joinDate;
@@ -72,5 +72,7 @@ public class GamePlayer {
         return id;
     }
 
-
+    public Date getJoinDate() {
+        return joinDate;
+    }
 }
