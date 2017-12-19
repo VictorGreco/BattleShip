@@ -1,9 +1,116 @@
-.ship{
-    background-color: red;
-}
+body{
+  background-color: rgba(0,0,0,0);
 
+}
+/*HEADER ROW -> PLAYER NAMES*/
 .displayPlayers{
     display:flex;
-    flex-direction: row;
-    justify-content: space-around;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 15vh;
+    margin-top: 20px;
+}
+.ownerPlayer, .notOwnerPlayer, .vs{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 50%;
+    width: auto;
+    color: white;
+    font-family: 'Ruslan Display', cursive;
+    font-size: 30px;
+}
+.ownerPlayer, .notOwnerPlayer{
+    padding-right:20px;
+    padding-left:20px;
+    border: 2px solid white;
+    border-radius: 30px;
+
+}
+.ownerPlayer{
+
+}
+.notOwnerPlayer{
+
+}
+.vs{
+
+}
+
+/*TABLES ROW -> 2 GRIDS: one with my ships & nemy salvoes and other with my slvoes*/
+#notMySalvoGrid{
+    width: 100%;
+    height: 450px;
+    color: white;
+    text-align: center;
+    margin-top: 20px;
+
+}
+.rotation-container{
+    margin-top: -30px;
+    position: relative;
+    -webkit-perspective: 150px; /* Safari 4-8  */
+    perspective: 400px;
+}
+#myShipGrid{
+    margin-left: -60px;
+    width: 122%;
+    height: 34.5vh;
+    color: white;
+    text-align: center;
+    position: absolute;
+   /* -webkit-transform: rotateX(45deg); /* Safari 3-8  */
+   /*transform: rotateX(45deg);*/
+
+}
+#notMySalvoGrid_A10, #myShipGrid_A10{
+    width:46px;
+}
+#menu{
+    width:100%;
+    height: 28vh;
+    border: 2px solid white;
+    color: white;
+}
+td:first-child, th{
+    border: none;
+    background-color: rgba(255,255,255,0.3);
+    text-align:center;
+}
+#notMySalvoGrid td{
+    border: 0.5px solid white;
+}
+#myShipGrid td{
+    border: 0.5px solid black;
+
+}
+#notMySalvoGrid td:first-child{
+    border: none;
+}
+td:hover{
+    background-color: rgba(255,255,255,0.7);
+
+}
+.shipProa{
+    background-color: green;
+
+}
+.shipPopa{
+    background-color: lightgreen;
+
+}
+.shipMiddle{
+    background-color: red;
+}
+.mySalvo{
+    background-color: rgba(255,255,255,0.4);
+}
+.enemySalvo{
+    background-color: yellow;
+
+}
+.hit{
+    background-color: blue;
 }

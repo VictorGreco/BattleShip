@@ -3,30 +3,26 @@ $(function () {
 //    var url = "http://localhost:8080/api/games";
     $.getJSON("http://localhost:8080/api/games", function (data) {
     console.log("JSON LOADED");
-    console.log(data);
     createGamesList (data);
     getRankingsTable(data);
-    console.log(allPlayerList(data));
-    console.log(playerTotalScoreAndGamesInfo("aslamasda@gmail.com" ,data));
-
     });
 });
 function createGamesList (data) {
     var ListID = 0;
     $(data).each(function () {
         var currentPlayer = "";
+        var date =  new Date(this.create);
         $(this.GamePlayers).each(function(){
-            console.log(this);
             currentPlayer += this.Player['name'] + " ";
         });
         currentPlayer = currentPlayer.split(" ");
         currentPlayer = currentPlayer[0]+ " -vs- " + currentPlayer[1];
-        console.log(currentPlayer);
 
         $('#gamesList').append($('<a>', {"id":"ListID"+ListID+"",
                                         "href":"#",
                                         "class": "list-group-item"
-                                        }).append(currentPlayer));
+                                        })
+                                        .append($('<span>').append(currentPlayer +" ("+ date.toDateString() +")")));
         ListID++
         });
 }
@@ -55,7 +51,6 @@ function getRankingsTable(data){
 }
 
 function getSingleScores(playerScores, tr){
-    console.log(playerScores);
     var totalPoints = playerScores[0];
     var totalLosts = playerScores[1];
     var totalDraws = playerScores[2];

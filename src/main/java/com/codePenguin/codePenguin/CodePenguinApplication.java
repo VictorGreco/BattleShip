@@ -1,19 +1,35 @@
 package com.codePenguin.codePenguin;
 
-import org.hibernate.validator.constraints.URL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.WebAttributes;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 
-import java.time.LocalDateTime;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 @SpringBootApplication
-public class CodePenguinApplication {
+public class CodePenguinApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
         SpringApplication.run(CodePenguinApplication.class, args);
@@ -29,9 +45,9 @@ public class CodePenguinApplication {
     {
         return (args) -> {
             // PLAYERS
-            Player player1 = new Player("victorgreco263@gmail.com");
-            Player player2 = new Player("victor@gmail.com");
-            Player player3 = new Player("aslamasda@gmail.com");
+            Player player1 = new Player("victorgreco263@gmail.com", "123456");
+            Player player2 = new Player("victor@gmail.com", "Az26!");
+            Player player3 = new Player("aslamasda@gmail.com", "Asdas!|");
 
             //DATES
             Date date1 = new Date();
@@ -75,7 +91,7 @@ public class CodePenguinApplication {
             Ship carrier2 = new Ship("Carrier2", carrier_Loc, gamePlayer2);
 
             //SALVOES POSITIONS
-            List<String> turn1Player1SalvoPos = new ArrayList<>(Arrays.asList("J1", "B7", "J3"));
+            List<String> turn1Player1SalvoPos = new ArrayList<>(Arrays.asList("J1", "B7", "J3", "A7", "E7"));
             List<String> turn1Player2SalvoPos = new ArrayList<>(Arrays.asList("I1", "C7", "I3"));
 
             List<String> turn2Player1SalvoPos = new ArrayList<>(Arrays.asList("J4", "J5", "J6"));
@@ -155,6 +171,89 @@ public class CodePenguinApplication {
             scoreRepository.save(scoreGame3Player1);
             scoreRepository.save(scoreGame3Player3);
 
+            System.out.println("a");
+            System.out.println(playerRepository.findByUserName("victor@gmail.com").getUserName());
+            System.out.println("b");
+            System.out.println(player2.getUserName());
+
+
         };
+
+    }
+}
+
+@Configuration
+class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
+   @Autowired
+    PlayerRepository playerRepository;
+
+    @Override
+    public void init(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService());
+    }
+
+    @Bean
+    UserDetailsService userDetailsService() {
+        return new UserDetailsService() {
+
+            @Override
+            public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+                Player player = playerRepository.findByUserName(name);
+                    if (player != null) {
+                        return new User(player.getUserName(), player.getPassword(),
+                                AuthorityUtils.createAuthorityList("USER"));
+                    }else{
+                        throw new UsernameNotFoundException("Unknown user: " + name);
+                    }
+
+
+            }
+        };
+    }
+}
+
+@EnableWebSecurity
+@Configuration
+class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .authorizeRequests()
+                .antMatchers("/web/games.html").permitAll()
+                .antMatchers("/web/games.css").permitAll()
+                .antMatchers("/web/games.js").permitAll()
+                .antMatchers("/api/games").permitAll()
+                .antMatchers("/api/login").permitAll()
+                .antMatchers("/api/game_view").hasAnyAuthority("USER")
+                .anyRequest().authenticated()
+                .and()
+                .formLogin()
+                .loginPage("/api/login")
+                .and()
+                .logout()
+                .logoutUrl("/api/logout");
+
+        // turn off checking for CSRF tokens
+        http.csrf().disable();
+
+        // if user is not authenticated, just send an authentication failure response
+        http.exceptionHandling().authenticationEntryPoint((req, res, exc) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED));
+
+        // if login is successful, just clear the flags asking for authentication
+        http.formLogin().successHandler((req, res, auth) -> clearAuthenticationAttributes(req));
+
+        // if login fails, just send an authentication failure response
+        http.formLogin().failureHandler((req, res, exc) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED));
+
+        // if logout is successful, just send a success response
+        http.logout().logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
+    }
+
+
+    private void clearAuthenticationAttributes(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+        }
     }
 }

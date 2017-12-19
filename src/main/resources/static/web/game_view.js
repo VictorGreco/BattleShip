@@ -1,3 +1,4 @@
+
 $(function(){
     var url = "";
     url == "" ? url = window.location.href : "";
@@ -40,7 +41,7 @@ $(function(){
     function wantToFire(place, tableIdent){
         console.log(place);
         console.log(tableIdent);
-        tableIdent == "notMySalvoGrid" ? alert("Do you want to fire on: " +place) : alert("You can't fire on your grid!");
+        tableIdent == "notMySalvoGrid" ? alert("Do you want to fire on: " +place + " ?") : alert("You can't fire on your own grid!");
     }
 
 //[FUNCTIONS]
@@ -106,15 +107,11 @@ $(function(){
             var Locations = this["Locations"];
             var Turn = this["Turn"];
             $(Locations).each(function(){
-                var currentLocation = $(grid+this);
-                currentLocation.addClass(theClass);
-                if(currentLocation.hasClass('ship enemySalvo')== true){
-                    currentLocation.addClass('hit');
-                }else{
-                    if(currentLocation.hasClass('enemySalvo')==true){
-                        currentLocation.addClass('notHit');
-                    }
-                }
+                var currLoc = $(grid+this);
+                currLoc.addClass(theClass);
+                currLoc.hasClass('shipMiddle')== true && currLoc.hasClass('enemySalvo') == true ? currLoc.addClass('hit') : "";
+                currLoc.hasClass('shipPopa')== true && currLoc.hasClass('enemySalvo') == true ? currLoc.addClass('hit') : "";
+                currLoc.hasClass('shipProa')== true && currLoc.hasClass('enemySalvo') == true ? currLoc.addClass('hit') : "";
             });
         });
     }
@@ -122,11 +119,20 @@ $(function(){
     function colorMyShipsLocation(data){
         $(data.Ships).each(function(){
             var shipLocation = this["location"];
+            var prePosNumber= 0;
+            var verificationHolder = "";
             for(let i = 0; i< shipLocation.length; i++){
                 i == 0 ? $('#myShipGrid_'+shipLocation[i]).addClass('shipProa'): "";
                 i == shipLocation.length - 1 ? $('#myShipGrid_'+shipLocation[i]).addClass('shipPopa') : "";
                 i != shipLocation.length - 1 && i != 0 ? $('#myShipGrid_'+shipLocation[i]).addClass('shipMiddle') : "";
+                var currentPosNumber = shipLocation[i].split("");
+                currentPosNumber = currentPosNumber[1];
+                prePosNumber != 0 && prePosNumber === currentPosNumber ?  verificationHolder = "vertical" : verificationHolder = "horizontal";
+                prePosNumber = currentPosNumber;
             }
+            $(shipLocation).each(function(){
+                verificationHolder === "vertical" ? $('#myShipGrid_' + this).addClass('vertical'): $('#myShipGrid_' + this).addClass('horizontal');
+            });
        });
     }
 
