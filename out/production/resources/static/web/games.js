@@ -3,10 +3,15 @@ $(function () {
 //    var url = "http://localhost:8080/api/games";
     $.getJSON("http://localhost:8080/api/games", function (data) {
     console.log("JSON LOADED");
-    createGamesList (data);
-    getRankingsTable(data);
+    getWelcome(data.User);
+    createGamesList (data.Games);
+    getRankingsTable(data.Games);
     });
 });
+function getWelcome(data){
+    $('#welcomeCartel').append($('<h1>').append("Welcome: " + data.name + " ojla te parta un... digo Buenas xD"));
+}
+
 function createGamesList (data) {
     var ListID = 0;
     $(data).each(function () {

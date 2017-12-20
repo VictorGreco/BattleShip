@@ -8,6 +8,7 @@
     <title>Games Page</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="games.css">
 
 </head>
 <body>
@@ -21,12 +22,14 @@
                     <li class="active"><a href="#">Games</a></li>
                     <li class="active"><a href="/web/game_view.html?gp=1">GameViews</a></li>
                 </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                <ul class="nav navbar-nav navbar-right" id="userActions">
+                    <li id="sign-in" ><a data-toggle="modal" href="#myModal"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                    <li id="login"><a data-toggle="modal" href="#myModal"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
                 </ul>
             </div>
-        </nav>        <aside class="row">
+        </nav>
+
+        <aside class="row">
             <div class="col-lg-6">
                 <ol id="gamesList" class="list-group"></ol>
             </div>
@@ -36,9 +39,33 @@
                 </article>
             </div>
         </aside>
-
     </main>
+    <section class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <label>
+                        <span class="error" id="error_emailMissed" style="display: none;">Email missed</span>
+                        <input type="text" placeholder="Email" id="email">
+                    </label>
+                    <label>
+                        <span class="error" id="error_pswMissed" style="display: none;">Password missed</span>
+                        <span class="error" id="error_pswToShort" style="display: none;">Password should have 6+ characters</span>
+                        <input type="password" placeholder="Password" id="password">
+                    </label>
+                </div>
+                <div class="modal-footer" id="modal-footer" style="text-align: center;">
+                    <button class="btn-lg btn-success" id="btn-login">Login</button>
+                    <button class="btn-lg btn-primary" id="btn-signin">Sign-In</button>
+                </div>
+            </div>
 
+        </div>
+    </section>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>

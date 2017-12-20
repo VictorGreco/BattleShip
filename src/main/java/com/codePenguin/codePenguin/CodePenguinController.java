@@ -1,9 +1,10 @@
 package com.codePenguin.codePenguin;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -14,21 +15,32 @@ import java.util.stream.Collectors;
 @RequestMapping("/api")
 public class CodePenguinController {
 
+//[START AUTOWIRED REPOSITORIES]
     @Autowired
-    private GameRepository myGameRespository;
+    private GameRepository gameRespository;
 
-    @RequestMapping("/games")
-    public List<Map<String, Object>> getAllGames() {
-        return myGameRespository
-                .findAll()
-                .stream()
-                .map(game -> makeGameDTO(game))
-                .collect(Collectors.toList());
-    }
+    @Autowired
+    private PlayerRepository playerRepository;
 
     @Autowired
     private GamePlayerRepository myGamePlayerRespository;
+//[ENDS AUTOWIRED REPOSITORIES]
 
+//[START REQUESTS MAPPINGS]
+    @RequestMapping("/games")
+    public Map<String, Object> jsonGamesAndUser(Authentication authentication){
+        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        if(authentication != null){
+            Player user = playerRepository.findByUserName(authentication.getName());
+            dto.put("user", makePlayerDTO(user));
+
+        }else{
+            dto.put("user", "null");
+
+        }
+        dto.put("games", getAllGames());
+        return dto;
+    }
     @RequestMapping("/game_view/{gamePlayerId}")
     public Map<String, Object> makeGameViewDTO(@PathVariable long gamePlayerId){
         GamePlayer myGamePlayer = myGamePlayerRespository.findOne(gamePlayerId);
@@ -51,6 +63,31 @@ public class CodePenguinController {
                 .collect(Collectors.toList()));
         return dto;
     }
+    @RequestMapping(path = "/players", method = RequestMethod.POST)
+    public ResponseEntity<String> createUser(@RequestParam String username, @RequestParam String password) {
+        if (username.isEmpty() || password.isEmpty()) {
+            return new ResponseEntity<>("Missed username or password", HttpStatus.FORBIDDEN);
+        }
+
+        Player player = playerRepository.findByUserName(username);
+        if (player != null) {
+            return new ResponseEntity<>("Username already used", HttpStatus.FORBIDDEN);
+        }
+
+        playerRepository.save(new Player(username, password));
+        return new ResponseEntity<>("User added", HttpStatus.CREATED);
+    }
+
+//[ENDS REQUEST MAPPINGS]
+
+//[START GENERAL FUNCTIONS]
+    private List<Map<String, Object>> getAllGames() {
+        return gameRespository
+                .findAll()
+                .stream()
+                .map(game -> makeGameDTO(game))
+                .collect(Collectors.toList());
+    }
 
     private Map<String, Object> makeGameDTO(Game game) {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
@@ -70,11 +107,11 @@ public class CodePenguinController {
     private Map<String, Object> makeGamePlayDTO(GamePlayer gamePlayer) {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("id", gamePlayer.getId());
-        dto.put("Player", getMakePlayerDTO(gamePlayer.getPlayer()));
+        dto.put("Player", makePlayerDTO(gamePlayer.getPlayer()));
         return dto;
     }
 
-    private Map<String, Object> getMakePlayerDTO(Player player){
+    private Map<String, Object> makePlayerDTO(Player player){
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("pId", player.getId());
         dto.put("name", player.getUserName());
@@ -111,4 +148,5 @@ public class CodePenguinController {
         dto.put("Locations", salvo.getSalvoLocations());
         return dto;
     }
+//[ENDS GENERAL FUNCTIONS]
 }
