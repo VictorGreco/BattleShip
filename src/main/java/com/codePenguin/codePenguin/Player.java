@@ -14,7 +14,7 @@ public class Player {
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
     Set<GamePlayer> gamePlayers;
 
-    @OneToMany(mappedBy="game", fetch=FetchType.EAGER)
+    @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
     Set<Score> scores;
 
     public Player() {

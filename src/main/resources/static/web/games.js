@@ -2,10 +2,12 @@ $(function () {
 
 //    var url = "http://localhost:8080/api/games";
     $.getJSON("http://localhost:8080/api/games", function (data) {
+    console.log(data);
     console.log("JSON LOADED");
     getWelcome(data.user);
     createGamesList (data.games);
-    getRankingsTable(data.games);
+    getRankingsTable(data.leader_board);
+
     $('#logout').click(logout);
     $('#sign-in').click(function(){
         $('#btn-login').hide();
@@ -110,68 +112,26 @@ function addLinksToGamesList(){
     var LinksList= [];
 }
 
-function getRankingsTable(data){
+function getRankingsTable(datLb){
     var thead = $('<thead>');
     var tbody = $('<tbody>');
+    var trH = $('<tr>');
 
-    var headers = ["Player","TotalScore","LostGames","DrawGmes","WinGames"]
-    $(allPlayerList(data)).each(function(){
-        var playerScores = playerTotalScoreAndGamesInfo(this+"", data);
-        var tr = $('<tr>');
-        tr.append($('<td>').append(this));
-        getSingleScores(playerScores, tr);
-        tbody.append(tr);
+    var headArray = ["UserName", "WinGames", "DrawDames" , "LostGames"];
+    $(headArray).each(function(){
+        trH.append($('<th>').append(this));
     });
+    thead.append(trH);
 
-    $(headers).each(function(){
-        thead.append($('<th>').append(this+""));
+    $(datLb).each(function(){
+        var trB = $('<tr>');
+        trB.append($('<td>').append(this.name))
+           .append($('<td>').append(this.WinGames))
+           .append($('<td>').append(this.DrawGames))
+           .append($('<td>').append(this.LostGames))
+        tbody.append(trB);
     });
+    
     $('#rankings').append(thead).append(tbody);
-}
-
-function getSingleScores(playerScores, tr){
-    var totalPoints = playerScores[0];
-    var totalLosts = playerScores[1];
-    var totalDraws = playerScores[2];
-    var totalWins = playerScores[3];
-
-    tr
-        .append($('<td>').append(totalPoints))
-        .append($('<td>').append(totalLosts))
-        .append($('<td>').append(totalDraws))
-        .append($('<td>').append(totalWins));
-
-    return tr;
-}
-
-function allPlayerList(data){
-    var PlayerList =[];
-    $(data).each(function(){
-        $(this.GamePlayers).each(function(){
-            PlayerList.indexOf(this.Player["name"]) == -1 ? PlayerList.push(this.Player["name"]) : "";
-        });
-    });
-    return  PlayerList.sort();
-}
-
-function playerTotalScoreAndGamesInfo(wantedPlayer, data){
-    var totalScore = 0;
-    var lostGames = 0;
-    var drawGames = 0;
-    var winGames = 0;
-    var scores = [];
-     $(data).each(function(){
-            $(this.Scores).each(function(){
-                this["name"]===wantedPlayer ? totalScore += this["Points"]: "";
-                this["name"]===wantedPlayer && this["Points"]==0 ? lostGames++ : "";
-                this["name"]===wantedPlayer && this["Points"]==1 ? drawGames++ : "";
-                this["name"]===wantedPlayer && this["Points"]==2 ? winGames++ : "";
-            });
-        });
-        scores.push(totalScore);
-        scores.push(lostGames);
-        scores.push(drawGames);
-        scores.push(winGames);
-    return scores;
 }
 

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @RestController
@@ -39,6 +41,7 @@ public class CodePenguinController {
 
         }
         dto.put("games", getAllGames());
+        dto.put("leader_board", getLeaderBoard());
         return dto;
     }
     @RequestMapping("/game_view/{gamePlayerId}")
@@ -77,10 +80,16 @@ public class CodePenguinController {
         playerRepository.save(new Player(username, password));
         return new ResponseEntity<>("User added", HttpStatus.CREATED);
     }
-
 //[ENDS REQUEST MAPPINGS]
 
 //[START GENERAL FUNCTIONS]
+    private List<Map<String, Object>> getLeaderBoard(){
+        return playerRepository
+                .findAll()
+                .stream()
+                .map(player -> makePlayerScoreDTO(player))
+                .collect(Collectors.toList());
+    }
     private List<Map<String, Object>> getAllGames() {
         return gameRespository
                 .findAll()
@@ -88,7 +97,23 @@ public class CodePenguinController {
                 .map(game -> makeGameDTO(game))
                 .collect(Collectors.toList());
     }
+    private Map<String, Object> makePlayerScoreDTO(Player currentPlayer){
+        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        dto.put("pId", currentPlayer.getId());
+        dto.put("name", currentPlayer.getUserName());
+        dto.put("WinGames", getResult(currentPlayer.getScores(), 2));
+        dto.put("LostGames", getResult(currentPlayer.getScores(), 0));
+        dto.put("DrawGames", getResult(currentPlayer.getScores(), 1));
 
+        return dto;
+    }
+    private long getResult(Set<Score> scoreSet, int filter){
+        long result = scoreSet
+                .stream()
+                .filter(score -> score.getScore() == filter)
+                .count();
+        return result;
+    }
     private Map<String, Object> makeGameDTO(Game game) {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("id", game.getId());
