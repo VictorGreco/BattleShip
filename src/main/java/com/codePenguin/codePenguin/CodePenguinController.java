@@ -60,6 +60,28 @@ public class CodePenguinController {
         return map;
     }
 
+    @RequestMapping(path = "/games/{gameId}/players", method = RequestMethod.POST)
+    public  ResponseEntity<Map<String,Object>> joinGame(Authentication authentication, @PathVariable long gameId) {
+        if(authentication != null){
+            Game wantedGame = gameRespository.findOne(gameId);
+            Player user = playerRepository.findByUserName(authentication.getName());
+            if(wantedGame == null){
+                return new ResponseEntity<>(makeNewGameMap("error", "Doesn't Exist"), HttpStatus.FORBIDDEN);
+            }else{
+                if (wantedGame.getGamePlayers().stream().count() == 1){
+                    GamePlayer newGamePlayer = new GamePlayer(wantedGame, user, new Date());
+                    gamePlayerRepository.save(newGamePlayer);
+                    return new ResponseEntity<>(makeNewGameMap("gpId", newGamePlayer.getId()), HttpStatus.CREATED);
+                }else{
+                    return new ResponseEntity<>(makeNewGameMap("error", "Game is Full"), HttpStatus.FORBIDDEN);
+                }
+            }
+        }else{
+            return new ResponseEntity<>(makeNewGameMap("error", "Unauthorized"), HttpStatus.UNAUTHORIZED);
+        }
+
+    }
+
     @RequestMapping("/game_view/{gamePlayerId}")
     public Map<String, Object> makeGameViewDTO(@PathVariable long gamePlayerId, Authentication authentication){
 
