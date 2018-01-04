@@ -45,7 +45,7 @@ public class CodePenguinApplication extends SpringBootServletInitializer {
     {
         return (args) -> {
             // PLAYERS
-            Player player1 = new Player("victorgreco263@gmail.com", "123456");
+            Player player1 = new Player("victorgreco263@gmail.com", "c");
             Player player2 = new Player("victor@gmail.com", "Az26!");
             Player player3 = new Player("aslamasda@gmail.com", "Asdas!|");
 

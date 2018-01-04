@@ -26,3 +26,10 @@ a{
     font-size: 18px;
     text-align:center;
 }
+
+.list-group-item{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-item:center;
+}

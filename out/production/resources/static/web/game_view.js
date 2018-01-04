@@ -15,13 +15,33 @@ $(function(){
 
 //[START CALLS]
     $.getJSON(url, function(data){
+    console.log(data);
+
+    if (data.Error === "ERROR"){
+        unauthorizedPage();
+    }else{
         getPlayersInfo(data);
         getGrid(data, "myShipGrid");
         getGrid(data, "notMySalvoGrid");
         colorGrid(data);
         onClickSomeTd();
+    }
+
     });
 //[END CALLS]
+
+
+function unauthorizedPage(){
+    var row = $('<section>', {'class': 'row'});
+    var col = $('<article>',{'class': 'col-lg-12'});
+    var messageBox = $('<div>',{'id': 'errorMessage'});
+    var message = 'Cheat is not allowed';
+
+    messageBox.append(message);
+    col.append(messageBox);
+    row.append(col);
+    $('#main').html(row);
+}
 
 //[USER INTERACTION FUNCTIONS]
     function onClickSomeTd(){

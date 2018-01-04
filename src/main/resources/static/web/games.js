@@ -1,3 +1,5 @@
+
+//[START WORKING CODE CALLS]
 $(function () {
 
 //    var url = "http://localhost:8080/api/games";
@@ -5,9 +7,10 @@ $(function () {
     console.log(data);
     console.log("JSON LOADED");
     getWelcome(data.user);
-    createGamesList (data.games);
+    createGamesList (data.games, data.user);
     getRankingsTable(data.leader_board);
-
+    myDataTable();
+    $('#newGame').click(newGame);
     $('#logout').click(logout);
     $('#sign-in').click(function(){
         $('#btn-login').hide();
@@ -20,6 +23,28 @@ $(function () {
         });
     });
 });
+//[ENDS WORKING CODE CALLS]
+
+//[START FUNCTION DESCRIPTIONS]
+
+function newGame(){
+    $.post({url: '/api/games'})
+    .done(function(response, status, jqXHR){
+        console.log(response);
+        window.location = 'game_view.html?gp='+response.gpId;
+    })
+    .fail(function(jqXHR, status, httpError){
+        alert('you must to be logged to create new games');
+    });
+}
+function myDataTable(){
+     $('#rankings').DataTable({
+        paging: false,
+        searching: false,
+        scrollY: "150px",
+        info: false
+     });
+}
 
 function signIn(){
     var email = $('#email').val();
@@ -48,14 +73,11 @@ function signIn(){
           token = "true";
          }
 
-
     if( token === "true"){
         $.post("/api/players", { username: email, password: psw})
                 .done(function(){ login(email, psw); window.location.reload()})
                 .fail(function(){console.log('cant sign-in')});
     }
-
-
 }
 
 function validateEmail(email) {
@@ -88,29 +110,35 @@ function getWelcome(data){
     }
 }
 
-function createGamesList (data) {
+function createGamesList (dataGames, loggedUser) {
     var ListID = 0;
-    $(data).each(function () {
-        var currentPlayer = "";
+    console.log(loggedUser);
+    $(dataGames).each(function () {
+        var gameInfo = "";
         var date =  new Date(this.create);
+        var gamePLayerID = "#";
+        var buttonClass = '';
+        var buttonText = '';
+
         $(this.GamePlayers).each(function(){
-            currentPlayer += this.Player['name'] + " ";
+            gameInfo += this.Player['name'] + " ";
+            this.Player['name'] == loggedUser.name ? gamePLayerID = "http://localhost:8080/web/game_view.html?gp=" +this.gpId+"" : "";
         });
-        currentPlayer = currentPlayer.split(" ");
-        currentPlayer = currentPlayer[0]+ " -vs- " + currentPlayer[1];
+
+        gameInfo = gameInfo.split(" ");
+        gameInfo = gameInfo[0]+ " -vs- " + gameInfo[1];
 
         $('#gamesList').append($('<a>', {"id":"ListID"+ListID+"",
-                                        "href":"#",
+                                        "href": gamePLayerID,
                                         "class": "list-group-item"
                                         })
-                                        .append($('<span>').append(currentPlayer +" ("+ date.toDateString() +")")));
+                                    .append($('<span>').append(gameInfo +" ("+ date.toDateString() +")"))
+                                    .append($('<button>',{'class': 'btn btn-default',
+                                                          'text': 'Click For Joing'})));
         ListID++
         });
 }
 
-function addLinksToGamesList(){
-    var LinksList= [];
-}
 
 function getRankingsTable(datLb){
     var thead = $('<thead>');
@@ -131,7 +159,8 @@ function getRankingsTable(datLb){
            .append($('<td>').append(this.LostGames))
         tbody.append(trB);
     });
-    
+
     $('#rankings').append(thead).append(tbody);
 }
+//[ENDS FUNCTION DESCRIPTIONS]
 

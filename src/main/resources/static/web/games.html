@@ -8,6 +8,7 @@
     <title>Games Page</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
     <link rel="stylesheet" href="games.css">
 
 </head>
@@ -18,25 +19,25 @@
                 <div class="navbar-header">
                     <a class="navbar-brand" href="#">CodePenguin</a>
                 </div>
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Games</a></li>
-                    <li class="active"><a href="/web/game_view.html?gp=1">GameViews</a></li>
-                </ul>
                 <ul class="nav navbar-nav navbar-right" id="userActions">
-                    <li id="sign-in" ><a data-toggle="modal" href="#myModal"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                    <li id="sign-in" ><a data-toggle="modal" href="#myModal"><span class="glyphicon glyphicon-user"></span> Sign In</a></li>
                     <li id="login"><a data-toggle="modal" href="#myModal"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
                 </ul>
             </div>
         </nav>
-
         <aside class="row">
             <div class="col-lg-6">
-                <ol id="gamesList" class="list-group"></ol>
+                <article class="table-responsive">
+                    <table id="rankings" class="table dt[-head|-body]-center"></table>
+                </article>
             </div>
             <div class="col-lg-6">
-                <article class="table-responsive">
-                    <table id="rankings" class="table"></table>
-                </article>
+                <button class="btn-lg btn-info" id="newGame">Create New Game </button>
+            </div>
+        </aside>
+        <aside class="row">
+            <div class="col-lg-12">
+                <ol id="gamesList" class="list-group"></ol>
             </div>
         </aside>
     </main>
@@ -70,6 +71,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
     <script src="games.js"></script>
 </body>
 </html>

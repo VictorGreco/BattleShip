@@ -6,11 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Predicate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -25,7 +21,7 @@ public class CodePenguinController {
     private PlayerRepository playerRepository;
 
     @Autowired
-    private GamePlayerRepository myGamePlayerRespository;
+    private GamePlayerRepository gamePlayerRepository;
 //[ENDS AUTOWIRED REPOSITORIES]
 
 //[START REQUESTS MAPPINGS]
@@ -44,26 +40,52 @@ public class CodePenguinController {
         dto.put("leader_board", getLeaderBoard());
         return dto;
     }
-    @RequestMapping("/game_view/{gamePlayerId}")
-    public Map<String, Object> makeGameViewDTO(@PathVariable long gamePlayerId){
-        GamePlayer myGamePlayer = myGamePlayerRespository.findOne(gamePlayerId);
-        Game myGame = myGamePlayer.getGame();
 
+    @RequestMapping(path = "/games", method = RequestMethod.POST)
+    public  ResponseEntity<Map<String,Object>> createNewGame(Authentication authentication) {
+        if (authentication != null) {
+            Player user = playerRepository.findByUserName(authentication.getName());
+            Game newGame = new Game(new Date());
+            gameRespository.save(newGame);
+            GamePlayer newGamePlayer = new GamePlayer(newGame, user, new Date());
+            gamePlayerRepository.save(newGamePlayer);
+            return new ResponseEntity<>(makeNewGameMap("gpId", newGamePlayer.getId()), HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<>(makeNewGameMap("error", "Unauthorized"), HttpStatus.UNAUTHORIZED);
+        }
+    }
+    private Map<String, Object> makeNewGameMap(String key, Object value) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(key, value);
+        return map;
+    }
+
+    @RequestMapping("/game_view/{gamePlayerId}")
+    public Map<String, Object> makeGameViewDTO(@PathVariable long gamePlayerId, Authentication authentication){
+
+        Player user = playerRepository.findByUserName(authentication.getName());
+        GamePlayer myGamePlayer = gamePlayerRepository.findOne(gamePlayerId);
+        Game myGame = myGamePlayer.getGame();
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
-        dto.put("id", myGamePlayer.getId());
-        dto.put("create", myGame.getDate());
-        dto.put("GamePlayers", myGame.getGamePlayers()
-                .stream()
-                .map(gamePlayer -> makeGamePlayDTO(gamePlayer))
-                .collect(Collectors.toList()));
-        dto.put("Ships", myGamePlayer.getShips()
-                .stream()
-                .map( ship-> makeShipDTO(ship))
-                .collect(Collectors.toList()));
-        dto.put("AllSalvOfGame", myGame.getGamePlayers()
-                .stream()
-                .map(gamePlayer -> makeSalvoesDTO(gamePlayer))
-                .collect(Collectors.toList()));
+
+        if(myGamePlayer.getPlayer().equals(user)){
+            dto.put("id", myGamePlayer.getId());
+            dto.put("create", myGame.getDate());
+            dto.put("GamePlayers", myGame.getGamePlayers()
+                    .stream()
+                    .map(gamePlayer -> makeGamePlayDTO(gamePlayer))
+                    .collect(Collectors.toList()));
+            dto.put("Ships", myGamePlayer.getShips()
+                    .stream()
+                    .map( ship-> makeShipDTO(ship))
+                    .collect(Collectors.toList()));
+            dto.put("AllSalvOfGame", myGame.getGamePlayers()
+                    .stream()
+                    .map(gamePlayer -> makeSalvoesDTO(gamePlayer))
+                    .collect(Collectors.toList()));
+        }else{
+            dto.put("Error", "ERROR");
+        }
         return dto;
     }
     @RequestMapping(path = "/players", method = RequestMethod.POST)
@@ -116,7 +138,7 @@ public class CodePenguinController {
     }
     private Map<String, Object> makeGameDTO(Game game) {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
-        dto.put("id", game.getId());
+        dto.put("gameId", game.getId());
         dto.put("create", game.getDate());
         dto.put("GamePlayers", game.getGamePlayers()
                 .stream()
@@ -131,7 +153,7 @@ public class CodePenguinController {
 
     private Map<String, Object> makeGamePlayDTO(GamePlayer gamePlayer) {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
-        dto.put("id", gamePlayer.getId());
+        dto.put("gpId", gamePlayer.getId());
         dto.put("Player", makePlayerDTO(gamePlayer.getPlayer()));
         return dto;
     }

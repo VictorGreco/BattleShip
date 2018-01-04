@@ -1,5 +1,6 @@
 body{
   background-color: rgba(0,0,0,0);
+  height: 100vh;
 
 }
 /*HEADER ROW -> PLAYER NAMES*/
@@ -62,17 +63,32 @@ body{
     text-align: center;
     position: absolute;
    /* -webkit-transform: rotateX(45deg); /* Safari 3-8  */
-   /*transform: rotateX(45deg);*/
+   transform: rotateX(45deg);
 
 }
 #notMySalvoGrid_A10, #myShipGrid_A10{
     width:46px;
 }
-#menu{
+#menu, #chat{
     width:100%;
-    height: 28vh;
+    height: 32vh;
     border: 2px solid white;
     color: white;
+    margin-top: 10px;
+}
+#errorMessage{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 32vh;
+    margin-top: 30vh;
+    border: 2px solid white;
+    color: white;
+    font-size: 20pt;
+}
+#menu{
+    height: 14vh;
 }
 td:first-child, th{
     border: none;
