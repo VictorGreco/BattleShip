@@ -26,6 +26,7 @@ public class Ship {
         this.type = type;
         this.shipPositions = shipPositions;
         this.gamePlayer = gamePlayer;
+        gamePlayer.addShip(this);
     }
     // getter && setter
     public long getId() {

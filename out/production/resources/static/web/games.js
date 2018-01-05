@@ -30,7 +30,6 @@ $(function () {
 function newGame(){
     $.post({url: '/api/games'})
     .done(function(response, status, jqXHR){
-        console.log(response);
         window.location = 'game_view.html?gp='+response.gpId;
     })
     .fail(function(jqXHR, status, httpError){
@@ -120,11 +119,25 @@ function createGamesList (dataGames, loggedUser) {
         var buttonClass = '';
         var buttonText = '';
 
+
+        if(this.GamePlayers.length == 2){
+            buttonClass = 'btn btn-info';
+            buttonText = 'View Game';
+        }
+        if(this.GamePlayers.length == 1){
+            buttonClass = 'btn btn-warning';
+            buttonText = 'Join Game';
+        }
+
         $(this.GamePlayers).each(function(){
+            if(loggedUser.name === this.Player.name){
+                buttonClass = 'btn btn-success';
+                buttonText = 'Play Game';
+            }
             gameInfo += this.Player['name'] + " ";
             this.Player['name'] == loggedUser.name ? gamePLayerID = "http://localhost:8080/web/game_view.html?gp=" +this.gpId+"" : "";
         });
-
+        console.log(this);
         gameInfo = gameInfo.split(" ");
         gameInfo = gameInfo[0]+ " -vs- " + gameInfo[1];
 
@@ -133,8 +146,28 @@ function createGamesList (dataGames, loggedUser) {
                                         "class": "list-group-item"
                                         })
                                     .append($('<span>').append(gameInfo +" ("+ date.toDateString() +")"))
-                                    .append($('<button>',{'class': 'btn btn-default',
-                                                          'text': 'Click For Joing'})));
+                                    .append($('<button>',{
+                                                'class': buttonClass,
+                                                'id': this.gameId,
+                                                'text': buttonText,
+                                                    click: function(){
+                                                        console.log(this.id);
+                                                        console.log(this);
+                                                        if($(this).hasClass('btn-warning')){
+                                                            var url = "/api/games/"+this.id+"/players";
+                                                            $.post(url)
+                                                                .done(function(response, status, jqXHR){
+                                                                    console.log(response);
+                                                                    window.location = 'game_view.html?gp='+response.gpId;
+                                                                })
+                                                                .fail(function(){
+                                                                    alert('a');
+                                                                })
+                                                        }
+
+                                                    }
+                                                }
+                                            )));
         ListID++
         });
 }

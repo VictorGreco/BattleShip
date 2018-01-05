@@ -26,6 +26,7 @@ public class Salvo {
         this.turnNumber = turnNumber;
         this.gamePlayer = gamePlayer;
         this.salvoLocations = salvoLocations;
+        gamePlayer.addSalvo(this);
     }
 
     //getter && setters

@@ -45,9 +45,9 @@ public class CodePenguinController {
     public  ResponseEntity<Map<String,Object>> createNewGame(Authentication authentication) {
         if (authentication != null) {
             Player user = playerRepository.findByUserName(authentication.getName());
-            Game newGame = new Game(new Date());
+            Game newGame = new Game();
             gameRespository.save(newGame);
-            GamePlayer newGamePlayer = new GamePlayer(newGame, user, new Date());
+            GamePlayer newGamePlayer = new GamePlayer(newGame, user);
             gamePlayerRepository.save(newGamePlayer);
             return new ResponseEntity<>(makeNewGameMap("gpId", newGamePlayer.getId()), HttpStatus.CREATED);
         }else{
@@ -69,7 +69,7 @@ public class CodePenguinController {
                 return new ResponseEntity<>(makeNewGameMap("error", "Doesn't Exist"), HttpStatus.FORBIDDEN);
             }else{
                 if (wantedGame.getGamePlayers().stream().count() == 1){
-                    GamePlayer newGamePlayer = new GamePlayer(wantedGame, user, new Date());
+                    GamePlayer newGamePlayer = new GamePlayer(wantedGame, user);
                     gamePlayerRepository.save(newGamePlayer);
                     return new ResponseEntity<>(makeNewGameMap("gpId", newGamePlayer.getId()), HttpStatus.CREATED);
                 }else{

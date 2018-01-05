@@ -2,6 +2,7 @@ package com.codePenguin.codePenguin;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -19,29 +20,31 @@ public class GamePlayer {
     private Player player;
 
     @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
-    Set<Ship> ships;
+    Set<Ship> ships = new HashSet<>();
 
     @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
-    Set<Salvo> salvoes;
+    Set<Salvo> salvoes = new HashSet<>();
 
     private Date joinDate;
 
     public GamePlayer(){}
 
-    public GamePlayer(Game game, Player player ,Date joinDate) {
+    public GamePlayer(Game game, Player player) {
         this.game = game;
         this.player = player;
-        this.joinDate = joinDate;
+        this.joinDate = new Date();
+        player.addGamePlay(this);
+        game.addGamePlay(this);
     }
 
     //voiders!!
     public void addShip(Ship ship) {
-        ship.setGamePlayer(this);
+//        ship.setGamePlayer(this);
         ships.add(ship);
     }
 
     public void addSalvo(Salvo salvo){
-        salvo.setGamePlayer(this);
+//        salvo.setGamePlayer(this);
         salvoes.add(salvo);
     }
 

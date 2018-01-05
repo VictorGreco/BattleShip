@@ -32,7 +32,10 @@ import java.util.List;
 public class CodePenguinApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
+        System.out.println("Main start");
         SpringApplication.run(CodePenguinApplication.class, args);
+        System.out.println("Main end");
+
     }
 
     @Bean
@@ -43,7 +46,10 @@ public class CodePenguinApplication extends SpringBootServletInitializer {
                                       SalvoRepository salvoRepository,
                                       ScoreRepository scoreRepository)
     {
+        System.out.println("initData running");
         return (args) -> {
+            System.out.println("CLR running");
+
             // PLAYERS
             Player player1 = new Player("victorgreco263@gmail.com", "c");
             Player player2 = new Player("victor@gmail.com", "Az26!");
@@ -61,17 +67,15 @@ public class CodePenguinApplication extends SpringBootServletInitializer {
             Game game2 = new Game(date2);
             Game game3 = new Game(date3);
 
-
-
             //GAMEPLAYERS
-            GamePlayer gamePlayer1 = new GamePlayer(game1, player1, new Date());
-            GamePlayer gamePlayer2 = new GamePlayer(game1, player2, new Date());
+            GamePlayer gamePlayer1 = new GamePlayer(game1, player1);
+            GamePlayer gamePlayer2 = new GamePlayer(game1, player2);
 
-            GamePlayer gamePlayer3 = new GamePlayer(game2, player2, new Date());
-            GamePlayer gamePlayer4 = new GamePlayer(game2, player3, new Date());
+            GamePlayer gamePlayer3 = new GamePlayer(game2, player2);
+            GamePlayer gamePlayer4 = new GamePlayer(game2, player3);
 
-            GamePlayer gamePlayer5 = new GamePlayer(game3, player1, new Date());
-            GamePlayer gamePlayer6 = new GamePlayer(game3, player3, new Date());
+            GamePlayer gamePlayer5 = new GamePlayer(game3, player1);
+            GamePlayer gamePlayer6 = new GamePlayer(game3, player3);
 
             //SHIPS POSITIONS
             List<String> patrolBoat_Loc = new ArrayList<>(Arrays.asList("A1", "A2"));
@@ -111,14 +115,14 @@ public class CodePenguinApplication extends SpringBootServletInitializer {
             Salvo turn3Player2 = new Salvo(3, gamePlayer2, turn3Player2SalvoPos);
 
             //SCORES
-            Score scoreGame1Player1 = new Score(0, game1, player1, new Date());
-            Score scoreGame1Player2 = new Score(2, game1, player2, new Date());
+            Score scoreGame1Player1 = new Score(0, game1, player1);
+            Score scoreGame1Player2 = new Score(2, game1, player2);
 
-            Score scoreGame2Player2 = new Score(2, game2, player2, new Date());
-            Score scoreGame2Player3 = new Score(0, game2, player3, new Date());
+            Score scoreGame2Player2 = new Score(2, game2, player2);
+            Score scoreGame2Player3 = new Score(0, game2, player3);
 
-            Score scoreGame3Player1 = new Score(1, game3, player1, new Date());
-            Score scoreGame3Player3 = new Score(1, game3, player3, new Date());
+            Score scoreGame3Player1 = new Score(1, game3, player1);
+            Score scoreGame3Player3 = new Score(1, game3, player3);
 
 
 
@@ -175,8 +179,6 @@ public class CodePenguinApplication extends SpringBootServletInitializer {
             System.out.println(playerRepository.findByUserName("victor@gmail.com").getUserName());
             System.out.println("b");
             System.out.println(player2.getUserName());
-
-
         };
 
     }
@@ -230,9 +232,12 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .loginPage("/api/login")
+
                 .and()
                 .logout()
                 .logoutUrl("/api/logout");
+
+
         // turn off checking for CSRF tokens
         http.csrf().disable();
 

@@ -24,11 +24,13 @@ public class Score {
     public Score() {
     }
 
-    public Score( int score, Game game, Player player, Date finishDate) {
+    public Score( int score, Game game, Player player) {
         this.game = game;
         this.player = player;
         this.score = score;
-        this.finishDate = finishDate;
+        this.finishDate = new Date();
+        player.addScore(this);
+        game.addScore(this);
     }
 
     //getters && setters

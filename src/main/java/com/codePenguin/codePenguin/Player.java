@@ -1,6 +1,7 @@
 package com.codePenguin.codePenguin;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -11,11 +12,12 @@ public class Player {
     private String userName;
     private String password;
 
-    @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
-    Set<GamePlayer> gamePlayers;
 
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
-    Set<Score> scores;
+    Set<GamePlayer> gamePlayers = new HashSet<>();
+
+    @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
+    Set<Score> scores = new HashSet<>();
 
     public Player() {
     }
@@ -27,13 +29,16 @@ public class Player {
 
     // voiders!
     public void addGamePlay(GamePlayer gamePlayer) {
-        gamePlayer.setPlayer(this);
+        //gamePlayer.setPlayer(this);
         gamePlayers.add(gamePlayer);
     }
 
     public void addScore(Score score) {
-        score.setPlayer(this);
-        scores.add(score);
+//        score.setPlayer(this);
+        if(score != null){
+            scores.add(score);
+        }
+
     }
 
     //      getter && setter methods
