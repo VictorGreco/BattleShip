@@ -26,16 +26,18 @@
             </div>
         </nav>
         <aside class="row">
-            <div class="col-lg-6">
+            <div class="col-lg-4">
+                <button class="btn-lg btn-info" id="newGame" style="display:none">Create New Game </button>
+            </div>
+            <div class="col-lg-8">
                 <article class="table-responsive">
-                    <table id="rankings" class="table dt[-head|-body]-center"></table>
+                    <table id="rankings" class="table-bordered dataTable no-footer" style=""></table>
                 </article>
             </div>
-            <div class="col-lg-6">
-                <button class="btn-lg btn-info" id="newGame">Create New Game </button>
-            </div>
+
         </aside>
         <aside class="row">
+            <!--<div class="col-lg-5"></div>-->
             <div class="col-lg-12">
                 <ol id="gamesList" class="list-group"></ol>
             </div>
@@ -46,9 +48,7 @@
         <div class="modal-dialog">
             <!-- Modal content-->
             <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
+
                 <div class="modal-body">
                     <label>
                         <span class="error" id="error_emailMissed" style="display: none;">Email missed</span>
@@ -59,8 +59,6 @@
                         <span class="error" id="error_pswToShort" style="display: none;">Password should have 6+ characters</span>
                         <input type="password" placeholder="Password" id="password">
                     </label>
-                </div>
-                <div class="modal-footer" id="modal-footer" style="text-align: center;">
                     <button class="btn-lg btn-success" id="btn-login">Login</button>
                     <button class="btn-lg btn-primary" id="btn-signin">Sign-In</button>
                 </div>

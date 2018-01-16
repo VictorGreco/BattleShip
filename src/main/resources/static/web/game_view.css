@@ -46,8 +46,9 @@ body{
     height: 450px;
     color: white;
     text-align: center;
-    margin-top: 20px;
-
+}
+#notMySalvoGrid th, #modalShipsGrid th{
+    height:42px;
 }
 .rotation-container{
     margin-top: -30px;
@@ -66,7 +67,7 @@ body{
    transform: rotateX(45deg);
 
 }
-#notMySalvoGrid_A10, #myShipGrid_A10{
+#notMySalvoGrid_A10, #myShipGrid_A10, #modalShipsGrid_A10{
     width:46px;
 }
 #menu, #chat{
@@ -102,9 +103,10 @@ td:first-child, th{
     border: 0.5px solid black;
 
 }
-#notMySalvoGrid td:first-child{
+#notMySalvoGrid td:first-child, #modalShipsGrid td:first-child{
     border: none;
 }
+
 td:hover{
     background-color: rgba(255,255,255,0.7);
 
@@ -130,3 +132,108 @@ td:hover{
 .hit{
     background-color: blue;
 }
+.modal-footer{
+    display:flex;
+    justify-content: space-around;
+}
+.modal-header{
+    display:flex;
+    justify-content: center;
+}
+
+#myModal{
+    background-image: url('resources/place_ships_Background.jpg');
+    background-size: cover;
+}
+
+.modal-content{
+    background-color: transparent;
+    width:100%;
+}
+
+.modal-dialog{
+    width: 80%;
+}
+#modalShipsGrid, #hangar{
+    width: 50%;
+    height: 450px;
+    color: white;
+    text-align: center;
+    background-color:rgba(0,0,0,0.5);
+ }
+
+ .cell{
+      height: 40px;
+      width: 46px;
+      border: 0.02px solid green;
+ }
+
+ #hangar{
+    display:flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 45%;
+    background-color:rgba(0,0,0,0.1);
+    border-radius: 5px;
+
+ }
+ .modal-body{
+    display:flex;
+    flex-direction-row;
+    justify-content: space-around;
+    align-items: flex-start;
+ }
+ .aircraft,.battleship, .submarine, .destroyer, .petrolBoat{
+    background-color: green;
+ }
+ .aircraft{
+    margin-top: -20px;
+    width: 235px;
+    height: 46px;
+ }
+
+ .battleship{
+   margin-top: -20px;
+   width: 188px;
+   height: 46px;
+ }
+
+ .submarine, .destroyer{
+    margin-top: -20px;
+    width: 141px;
+    height: 46px;
+
+ }
+
+ .petrolBoat{
+      margin-top: -20px;
+      width: 94px;
+      height: 46px;
+
+ }
+ .hangar{
+    display:flex;
+    justify-content: center;
+    align-items: flex-end;
+    width: 100%;
+    height: 20%;
+ }
+
+ .horizontal{
+
+    }
+ .dispHorizontal{
+
+ }
+
+ .vertical{
+
+    }
+ .dispVertical{
+
+     }
+ #modalShipsGrid td{
+    height: 46px;
+    width: 46px;
+ }

@@ -1,9 +1,54 @@
+       // drag and drop functions outside the 'ready'
+        function allowDrop(ev) {
+               ev.preventDefault();
+            }
+
+        function dragStart(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+        }
+        function drag(ev){
+            $('#'+ev.path[0].id+'').hide();
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            console.log(ev);
+            var cellId = ev.target.id;
+            var shipId =  ev.dataTransfer.getData("text");
+            $('#'+shipId+'').show();
+            if(!$('#'+cellId+'').hasClass('hangar')){
+                cellId = cellId.split('_');
+                var shipLength = 0;
+                var exclusionLetters = [];
+                shipId == 'drag0' ? (shipLength = 5 , exclusionLetters = ['G','H','I','J']): '';
+                shipId == 'drag1' ? (shipLength = 4 , exclusionLetters = ['H','I','J']) : '';
+                shipId == 'drag2' ? (shipLength = 3 , exclusionLetters = ['I','J']) : '';
+                shipId == 'drag3' ? (shipLength = 3 , exclusionLetters = ['I','J']) : '';
+                shipId == 'drag4' ? (shipLength = 2 , exclusionLetters = ['J']) : '';
+                var idNumber = cellId[1].split('');
+                if($('#'+shipId+'').hasClass('dispHorizontal')){
+                    idNumber.length == 3 ? idNumber = idNumber[1]+idNumber[2] : idNumber = idNumber[1];
+                    if(1<=idNumber && idNumber <=(10-shipLength)+1){
+                        ev.target.appendChild(document.getElementById(shipId));
+                    }
+                }else{
+                    var holder = 'true';
+                    $(exclusionLetters).each(function(){
+                        idNumber[0] == this ? holder = 'false' : '';
+                    });
+                    holder == 'true' ? ev.target.appendChild(document.getElementById(shipId)) : '';
+                }
+            }else{
+                ev.target.appendChild(document.getElementById(shipId));
+            }
+        }
+
 
 $(function(){
+// url used to getJSON call.
     var url = "";
-    url == "" ? url = window.location.href : "";
-    urlSplited = url.split("=");
-    gpValue = urlSplited[1];
+    url == "" ? url = window.location.href.split('=') : "";
+    gpValue = url[1];
     url = "http://localhost:8080/api/game_view/"+ gpValue+"";
 
 //[STARTS RANDOM BACKGROUND]
@@ -15,18 +60,19 @@ $(function(){
 
 //[START CALLS]
     $.getJSON(url, function(data){
-    console.log(data);
 
     if (data.Error === "ERROR"){
         unauthorizedPage();
     }else{
         getPlayersInfo(data);
-        getGrid(data, "myShipGrid");
-        getGrid(data, "notMySalvoGrid");
+        getGrid("myShipGrid");
+        getGrid("notMySalvoGrid");
+        getGrid("modalShipsGrid");
         colorGrid(data);
         onClickSomeTd();
-    }
-
+        $('#placeShipsBtn').click(placeShips);
+        getHangar();
+        }
     });
 //[END CALLS]
 
@@ -58,19 +104,41 @@ function unauthorizedPage(){
         });
     }
 
-    function wantToFire(place, tableIdent){
-        console.log(place);
-        console.log(tableIdent);
-        tableIdent == "notMySalvoGrid" ? alert("Do you want to fire on: " +place + " ?") : alert("You can't fire on your own grid!");
+    function wantToFire(place, tableId){
+        tableId == "notMySalvoGrid" ? alert("Do you want to fire on: " +place + " ?") : '';
+        tableId == "MySalvoGrid" ? alert("Can't fire on your grid") : '';
     }
 
 //[FUNCTIONS]
-    function getGrid(data, tableId){
-        tableId = tableId+"";
+
+    function placeShips(){
+
+    }
+
+    function postShips(){
+       var url = window.location.href.split('=');
+       $.post({
+         url: '/api/games/players/'+url[1]+'/ships',
+         data: JSON.stringify([ { "type": "destroyer", "shipPositions": ["A1", "B1", "C1"] },
+         { "type": "patrol boat", "shipPositions": ["H5", "H6"] }
+       ]),
+         dataType: "text",
+         contentType: "application/json"
+       })
+       .done(function (response, status, jqXHR) {
+         window.location.reload();
+
+       })
+       .fail(function (jqXHR, status, httpError) {
+         alert("Failed to add pet:"+ httpError);
+       })
+    }
+    function getGrid(tableId){
         $("#"+tableId)
             .append(appendTr_thead())
-            .append(appendTr_tbody(data, tableId));
+            .append(appendTr_tbody( tableId));
     }
+
 
     function appendTr_thead(){
         var x = $('<thead>');
@@ -83,7 +151,7 @@ function unauthorizedPage(){
         return x;
     }
 
-    function appendTr_tbody(data, tableId){
+    function appendTr_tbody(tableId){
         var x = $('<tbody>');
         var headArray = ["A","B","C","D","E","F","G","H","I","J"];
         $(headArray).each(function(){
@@ -94,13 +162,23 @@ function unauthorizedPage(){
 
     function appendTd_Tr(current, tableId){
         var x = $('<tr>');
+        if(tableId == 'modalShipsGrid'){
+            var cellClass = 'cell';
+        }
             x.append($('<td>').append(current));
             for (let i = 1; i <= 10; i++){
                 i= ""+i +"";
-                x.append($('<td>',{"id": tableId+"_"+current+ i}));
+                x.append($('<td>',{
+                "id": tableId+"_"+current+ i,
+                'class': cellClass,
+                'ondrop': 'drop(event)',
+                'ondragover': 'allowDrop(event)'
+                }));
             }
         return x;
     }
+
+
 
     function appendTd_Tr_Tbody(){
         var x = $('<td>');
@@ -155,6 +233,46 @@ function unauthorizedPage(){
             });
        });
     }
+
+    function getHangar(){
+        for(var i = 0; i<5; i++){
+            var hangar = $('<div>',{
+                            'id': 'hangar'+i+'',
+                            'class': 'hangar',
+                            'ondrop': 'drop(event)',
+                            'ondragover': 'allowDrop(event)',
+                        });
+             i == 0 ? shipClass = 'aircraft' : '';  i == 1 ? shipClass = 'battleship' : ''; i == 2 ? shipClass = 'submarine' : '';
+             i == 3 ? shipClass = 'destroyer' : ''; i == 4 ? shipClass = 'petrolBoat' : '';
+            var ship = $('<div>', {
+                            'id': 'drag'+i+'',
+                            'class': shipClass + ' dispHorizontal',
+                            draggable: 'true',
+                            ondragstart: 'dragStart(event)',
+                            ondrag: 'drag(event)',
+                            click: function(event){
+                                var targetId = event.currentTarget.attributes[0].nodeValue;
+                                if($('#'+targetId+'').hasClass('dispHorizontal')){
+                                    $('#'+targetId+'').removeClass('dispHorizontal');
+                                    $('#'+targetId+'').addClass('dispVertical');
+                                    var width = $('#'+targetId+'').css('width');
+                                    var height = $('#'+targetId+'').css('height');
+                                     $('#'+targetId+'').css({'width':height,'height':width});
+                                }else{
+                                    $('#'+targetId+'').removeClass('dispVertical');
+                                    $('#'+targetId+'').addClass('dispHorizontal');
+                                    var width = $('#'+targetId+'').css('width');
+                                    var height = $('#'+targetId+'').css('height');
+                                    $('#'+targetId+'').css({'width':height,'height':width});
+                                }
+                            }
+
+            }).css({'position': 'absolute'});
+            $('#hangar').append($(hangar).append(ship));
+        }
+    }
+
+
 
     function getPlayersInfo(data){
        $(data.GamePlayers).each(function(){

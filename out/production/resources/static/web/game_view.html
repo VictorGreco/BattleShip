@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css?family=Ruslan+Display" rel="stylesheet">
     <link rel="stylesheet" href="game_view.css">
+
+
+
 </head>
 <body>
     <main class="container" id="main">
@@ -24,17 +27,92 @@
             <article class="col-lg-6">
                 <div id="displayPlayers" class="displayPlayers"></div>
                 <div id="chat">Some kind of chat</div>
-                <div id="menu">Some buttons</div>
+                <div id="menu">
+                    <a class="btn btn-danger" id="placeShipsBtn" data-toggle="modal" href="#myModal">Place Ships</a>
+                    <a class="btn btn-danger" id="exitGame" href="http://localhost:8080/web/games.html">Exit Game</a>
+                </div>
             </article>
         </section>
     </main>
 
-
-
-
+    <section class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <!--<button type="button" class="close" data-dismiss="modal">&times;</button>-->
+                    <h4 class="modal-title">RADAR</h4>
+                </div>
+                <div class="modal-body">
+                    <table id="modalShipsGrid" style="text-align:center;"></table>
+                    <aside id="hangar"></aside>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-lg btn-success" id="ships-confirm">Confirm</button>
+                    <button class="btn-lg btn-danger " id="ships-cancel" data-dismiss="modal">&times;</button>
+                </div>
+            </div>
+        </div>
+    </section>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
     <script src="game_view.js"></script>
+    <script>
+        var orientation = 'horizontal';
+         function allowDrop(ev) {
+                ev.preventDefault();
+            }
+
+        function dragStart(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+        }
+
+        function drag(ev, orientation){
+            $('#'+ev.path[0].id+'').hide();
+
+
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            console.log(ev);
+            var cellId = ev.target.id;
+            var shipId =  ev.dataTransfer.getData("text");
+            console.log(cellId);
+            console.log(shipId);
+            $('#'+shipId+'').show();
+            if(cellId != 'hangar0'){
+                cellId = cellId.split('_');
+                var shipLength = 0;
+                shipId == 'drag0' ? shipLength = 5 : '';
+                shipId == 'drag1' ? shipLength = 4 : '';
+                shipId == 'drag2' ? shipLength = 3 : '';
+                shipId == 'drag3' ? shipLength = 3 : '';
+                shipId == 'drag4' ? shipLength = 2 : '';
+                var idNumber = cellId[1].split('');
+                if( idNumber.length == 3){
+                    idNumber = idNumber[1]+idNumber[2];
+                }else{
+                    idNumber = idNumber[1]
+                }
+                console.log('id number'+idNumber);
+                console.log(shipLength+1);
+                if(1<=idNumber && idNumber <=(10-shipLength)+1){
+                    ev.target.appendChild(document.getElementById(shipId));
+                }else{
+                    alert("can't place");
+                }
+            }else{
+                ev.target.appendChild(document.getElementById(shipId));
+            }
+        }
+
+
+
+
+    </script>
+
+
+
 </body>
 </html>

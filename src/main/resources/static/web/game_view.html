@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css?family=Ruslan+Display" rel="stylesheet">
     <link rel="stylesheet" href="game_view.css">
+
+
+
 </head>
 <body>
     <main class="container" id="main">
@@ -24,17 +27,35 @@
             <article class="col-lg-6">
                 <div id="displayPlayers" class="displayPlayers"></div>
                 <div id="chat">Some kind of chat</div>
-                <div id="menu">Some buttons</div>
+                <div id="menu">
+                    <a class="btn btn-danger" id="placeShipsBtn" data-toggle="modal" href="#myModal">Place Ships</a>
+                    <a class="btn btn-danger" id="exitGame" href="http://localhost:8080/web/games.html">Exit Game</a>
+                </div>
             </article>
         </section>
     </main>
 
-
-
-
+    <section class="modal fade" id="myModal" role="dialog" ondragover = allowDrop(event) ondrop = drop(event)>
+        <div class="modal-dialog" ondragover = allowDrop(event) ondrop = drop(event)>
+            <!-- Modal content-->
+            <div class="modal-content" ondragover = allowDrop(event) ondrop = drop(event)>
+                <div class="modal-header" ondragover = allowDrop(event) ondrop = drop(event)>
+                    <!--<button type="button" class="close" data-dismiss="modal">&times;</button>-->
+                    <h4 class="modal-title" ondragover = allowDrop(event) ondrop = drop(event)>RADAR</h4>
+                </div>
+                <div class="modal-body" ondragover = allowDrop(event) ondrop = drop(event)>
+                    <table id="modalShipsGrid" style="text-align:center;"></table>
+                    <aside id="hangar"></aside>
+                </div>
+                <div class="modal-footer" ondragover = allowDrop(event) ondrop = drop(event)>
+                    <button class="btn-lg btn-success" id="ships-confirm" ondragover = allowDrop(event) ondrop = drop(event)>Confirm</button>
+                    <button class="btn-lg btn-danger " id="ships-cancel" data-dismiss="modal" ondragover = allowDrop(event) ondrop = drop(event)>&times;</button>
+                </div>
+            </div>
+        </div>
+    </section>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
     <script src="game_view.js"></script>
 </body>
 </html>

@@ -39,12 +39,12 @@ public class GamePlayer {
 
     //voiders!!
     public void addShip(Ship ship) {
-//        ship.setGamePlayer(this);
+        ship.setGamePlayer(this);
         ships.add(ship);
     }
 
     public void addSalvo(Salvo salvo){
-//        salvo.setGamePlayer(this);
+        salvo.setGamePlayer(this);
         salvoes.add(salvo);
     }
 

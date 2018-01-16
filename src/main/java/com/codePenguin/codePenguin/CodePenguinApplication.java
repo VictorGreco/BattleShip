@@ -104,6 +104,8 @@ public class CodePenguinApplication extends SpringBootServletInitializer {
             List<String> turn3Player1SalvoPos = new ArrayList<>(Arrays.asList("J8", "J9", "J10"));
             List<String> turn3Player2SalvoPos = new ArrayList<>(Arrays.asList("I8", "I9", "I10"));
 
+//            int Turn = 1;
+
             //SALVOES
             Salvo turn1Player1 = new Salvo(1, gamePlayer1, turn1Player1SalvoPos);
             Salvo turn1Player2 = new Salvo(1, gamePlayer2, turn1Player2SalvoPos);
@@ -224,6 +226,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/web/games.html").permitAll()
                 .antMatchers("/web/games.css").permitAll()
                 .antMatchers("/web/games.js").permitAll()
+                .antMatchers("/web/resources/**").permitAll()
                 .antMatchers("/api/games").permitAll()
                 .antMatchers("/api/login").permitAll()
                 .antMatchers("/api/players").permitAll()
@@ -232,7 +235,6 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .loginPage("/api/login")
-
                 .and()
                 .logout()
                 .logoutUrl("/api/logout");

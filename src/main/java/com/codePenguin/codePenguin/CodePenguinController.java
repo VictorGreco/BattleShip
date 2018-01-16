@@ -22,6 +22,9 @@ public class CodePenguinController {
 
     @Autowired
     private GamePlayerRepository gamePlayerRepository;
+
+    @Autowired
+    private ShipRepository shipRepository;
 //[ENDS AUTOWIRED REPOSITORIES]
 
 //[START REQUESTS MAPPINGS]
@@ -49,12 +52,12 @@ public class CodePenguinController {
             gameRespository.save(newGame);
             GamePlayer newGamePlayer = new GamePlayer(newGame, user);
             gamePlayerRepository.save(newGamePlayer);
-            return new ResponseEntity<>(makeNewGameMap("gpId", newGamePlayer.getId()), HttpStatus.CREATED);
+            return new ResponseEntity<>(makeResponseEntityMap("gpId", newGamePlayer.getId()), HttpStatus.CREATED);
         }else{
-            return new ResponseEntity<>(makeNewGameMap("error", "Unauthorized"), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(makeResponseEntityMap("error", "Unauthorized"), HttpStatus.UNAUTHORIZED);
         }
     }
-    private Map<String, Object> makeNewGameMap(String key, Object value) {
+    private Map<String, Object> makeResponseEntityMap(String key, Object value) {
         Map<String, Object> map = new HashMap<>();
         map.put(key, value);
         return map;
@@ -66,20 +69,46 @@ public class CodePenguinController {
             Game wantedGame = gameRespository.findOne(gameId);
             Player user = playerRepository.findByUserName(authentication.getName());
             if(wantedGame == null){
-                return new ResponseEntity<>(makeNewGameMap("error", "Doesn't Exist"), HttpStatus.FORBIDDEN);
+                return new ResponseEntity<>(makeResponseEntityMap("error", "Doesn't Exist"), HttpStatus.FORBIDDEN);
             }else{
                 if (wantedGame.getGamePlayers().stream().count() == 1){
                     GamePlayer newGamePlayer = new GamePlayer(wantedGame, user);
                     gamePlayerRepository.save(newGamePlayer);
-                    return new ResponseEntity<>(makeNewGameMap("gpId", newGamePlayer.getId()), HttpStatus.CREATED);
+                    return new ResponseEntity<>(makeResponseEntityMap("gpId", newGamePlayer.getId()), HttpStatus.CREATED);
                 }else{
-                    return new ResponseEntity<>(makeNewGameMap("error", "Game is Full"), HttpStatus.FORBIDDEN);
+                    return new ResponseEntity<>(makeResponseEntityMap("error", "Game is Full"), HttpStatus.FORBIDDEN);
                 }
             }
         }else{
-            return new ResponseEntity<>(makeNewGameMap("error", "Unauthorized"), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(makeResponseEntityMap("error", "Not Logged User"), HttpStatus.UNAUTHORIZED);
         }
+    }
 
+    @RequestMapping(path = "/games/players/{gamePlayerId}/ships", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> genShips(Authentication authentication,
+                                                        @PathVariable long gamePlayerId,
+                                                        @RequestBody List<Ship>shipList) {
+        if (authentication != null){
+            if(gamePlayerRepository.findOne(gamePlayerId) != null){
+                GamePlayer gamePlayer = gamePlayerRepository.findOne(gamePlayerId);
+                Player user = playerRepository.findByUserName(authentication.getName());
+                if(gamePlayer.getPlayer().getId() == user.getId()){
+                    if(gamePlayer.getShips().isEmpty()){
+                        shipList.stream().forEach(ship -> gamePlayer.addShip(ship));
+                        shipList.stream().forEach(ship -> shipRepository.save(ship));
+                        return new ResponseEntity<>(makeResponseEntityMap("OK", ""), HttpStatus.CREATED);
+                    }else{
+                        return new ResponseEntity<>(makeResponseEntityMap("error", "You can't have more Ships"), HttpStatus.FORBIDDEN);
+                    }
+                }else{
+                    return new ResponseEntity<>(makeResponseEntityMap("error", "Your're Not the Owner"), HttpStatus.UNAUTHORIZED);
+                }
+            }else{
+                return new ResponseEntity<>(makeResponseEntityMap("error", "No GamePlayer"), HttpStatus.UNAUTHORIZED);
+            }
+        }else{
+            return new ResponseEntity<>(makeResponseEntityMap("error", "Not Logged User"), HttpStatus.UNAUTHORIZED);
+        }
     }
 
     @RequestMapping("/game_view/{gamePlayerId}")

@@ -46,8 +46,9 @@ body{
     height: 450px;
     color: white;
     text-align: center;
-    margin-top: 20px;
-
+}
+#notMySalvoGrid th, #modalShipsGrid th{
+    height:42px;
 }
 .rotation-container{
     margin-top: -30px;
@@ -66,7 +67,7 @@ body{
    transform: rotateX(45deg);
 
 }
-#notMySalvoGrid_A10, #myShipGrid_A10{
+#notMySalvoGrid_A10, #myShipGrid_A10, #modalShipsGrid_A10{
     width:46px;
 }
 #menu, #chat{
@@ -102,7 +103,7 @@ td:first-child, th{
     border: 0.5px solid black;
 
 }
-#notMySalvoGrid td:first-child{
+#notMySalvoGrid td:first-child, #modalShipsGrid td:first-child{
     border: none;
 }
 td:hover{
@@ -130,3 +131,99 @@ td:hover{
 .hit{
     background-color: blue;
 }
+.modal-footer{
+    display:flex;
+    justify-content: space-around;
+}
+.modal-header{
+    display:flex;
+    justify-content: center;
+}
+
+#myModal{
+    background-image: url('resources/place_ships_Background.jpg');
+    background-size: cover;
+}
+
+.modal-content{
+    background-color: transparent;
+    width:100%;
+}
+
+.modal-dialog{
+    width: 80%;
+}
+#modalShipsGrid, #hangar{
+    width: 50%;
+    height: 450px;
+    color: white;
+    text-align: center;
+    background-color:rgba(0,0,0,0.5);
+ }
+
+ .cell{
+      height: 40px;
+      width: 46px;
+      border: 0.1px solid green;
+ }
+
+ #hangar{
+    display:flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 45%;
+    background-color:rgba(0,0,0,0.1);
+    border-radius: 5px;
+
+ }
+ .modal-body{
+    display:flex;
+    flex-direction-row;
+    justify-content: space-around;
+    align-items: flex-start;
+ }
+ .aircraft,.battleship, .submarine, .destroyer, .petrolBoat{
+    background-color: green;
+ }
+ .aircraft{
+    margin-top: -20px;
+    width: 230px;
+    height: 40px;
+ }
+
+ .battleship{
+   margin-top: -20px;
+   width: 184px;
+   height: 40px;
+ }
+
+ .submarine, .destroyer{
+    margin-top: -20px;
+    width: 138px;
+    height: 40px;
+
+ }
+
+ .petrolBoat{
+      margin-top: -20px;
+      width: 92px;
+      height: 40px;
+
+ }
+ .hangar{
+    display:flex;
+    justify-content: center;
+    align-items: flex-end;
+    width: 50%;
+    height: 70px;
+    background-color: red;
+ }
+
+ .horizontal{
+
+    }
+
+ .vertical{
+
+    }

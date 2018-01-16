@@ -1,3 +1,10 @@
+body{
+    background-image: url('resources/games_background3.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
 a{
     display: flex;
     justify-content: space-between;
@@ -5,18 +12,30 @@ a{
 .modal-dialog{
     width: 400px;
 }
-.modal-header{
-    background-color: rgba(200, 200, 200, 0.3);
-}
 .modal-body{
     display:flex;
-    justify-content: space-around;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     flex-wrap: wrap;
+}
+.modal-body:first-child{
+    margin: 15px;
 }
 
 .modal-body label{
     width: 70%;
     margin: 10px;
+}
+.modal-body label input{
+    background: rgba(0 ,0 ,0 ,0.8);
+    color: white;
+    border:1px solid rgb(23, 177, 246);
+
+}
+.modal-body button{
+    width: 30%;
+    margin: 5px;
 }
 
 #password, #email{
@@ -26,10 +45,49 @@ a{
     font-size: 18px;
     text-align:center;
 }
-
+#gamesList{
+    /*margin-top: 20vh;*/
+}
 .list-group-item{
     display:flex;
     flex-direction: row;
     justify-content: space-between;
     align-item:center;
+    background-color: rgba(255,255,255,0.5);
+}
+.list-group-item span{
+    color: black;
+    font-size: 17px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-item: center;
+}
+
+table.dataTable tbody tr, table.dataTable thead th{
+    background: rgba(255,255,255,0.5);
+    color:black;
+    text-align: center;
+    font-size: 17px;
+    font-weight: bold;
+    border: 1px solid white;
+
+}
+table.dataTable, table.dataTable.no-footer{
+    border: 1px solid white;
+}
+
+.row{
+    margin-top: 5vh;
+}
+#myModal{
+    background-image: url('resources/login_background3.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+.modal-content{
+    background-image: url('resources/login_modal_background.png');
+    background-size:contain;
+    margin-top: 15vh;
 }

@@ -6,27 +6,36 @@ $(function () {
     $.getJSON("http://localhost:8080/api/games", function (data) {
     console.log(data);
     console.log("JSON LOADED");
-    getWelcome(data.user);
+    //functions that loads ever!
     createGamesList (data.games, data.user);
     getRankingsTable(data.leader_board);
     myDataTable();
-    $('#newGame').click(newGame);
-    $('#logout').click(logout);
-    $('#sign-in').click(function(){
-        $('#btn-login').hide();
-        $('#btn-signin').show().click(signIn);
 
-        });
-    $('#login').click(function(){
-        $('#btn-signin').hide();
-        $('#btn-login').show().click(login);
-        });
+    // function that loads only if the user is authorized or not!
+    if(data.user === "null"){
+        unauthorized();
+    }else{
+        getWelcome(data.user);
+       $('#newGame').show();
+        $('#newGame').click(newGame);
+        $('#logout').click(logout);
+    }
     });
 });
 //[ENDS WORKING CODE CALLS]
 
 //[START FUNCTION DESCRIPTIONS]
 
+function unauthorized(data){
+   $('#sign-in').click(function(){
+       $('#btn-login').hide();
+       $('#btn-signin').show().click(signIn);
+       });
+   $('#login').click(function(){
+       $('#btn-signin').hide();
+       $('#btn-login').show().click(login);
+       });
+}
 function newGame(){
     $.post({url: '/api/games'})
     .done(function(response, status, jqXHR){
@@ -40,7 +49,7 @@ function myDataTable(){
      $('#rankings').DataTable({
         paging: false,
         searching: false,
-        scrollY: "150px",
+//        scrollY: "150px",
         info: false
      });
 }
@@ -97,10 +106,14 @@ function login(email, psw){
 }
 function logout(){
     $.post("/api/logout").done(function() { console.log("logged out!"); })
+    $('body').css({'background-image':'url(resources/games_background3.png)'});
     window.location.reload();
+
+
 }
 function getWelcome(data){
     if(data.name != null){
+        $('body').css({'background-image':'url(resources/login_background4.jpg)'});
         $('#sign-in').hide();
         $('#login').hide();
         $('#userActions')
@@ -120,11 +133,11 @@ function createGamesList (dataGames, loggedUser) {
         var buttonText = '';
 
 
-        if(this.GamePlayers.length == 2){
+        if(this.GamePlayers.length == 2 || (this.GamePlayers.length == 1 && loggedUser == "null")){
             buttonClass = 'btn btn-info';
             buttonText = 'View Game';
         }
-        if(this.GamePlayers.length == 1){
+        if(this.GamePlayers.length == 1 && loggedUser != "null"){
             buttonClass = 'btn btn-warning';
             buttonText = 'Join Game';
         }

@@ -28,6 +28,12 @@ public class Ship {
         this.gamePlayer = gamePlayer;
         gamePlayer.addShip(this);
     }
+
+    public Ship(String type, List<String> shipPositions) {
+        this.type = type;
+        this.shipPositions = shipPositions;
+    }
+
     // getter && setter
     public long getId() {
         return id;
