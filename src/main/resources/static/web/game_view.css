@@ -237,3 +237,8 @@ td:hover{
     height: 46px;
     width: 46px;
  }
+
+ .dragging{
+    height: 40px;
+    width: 40px;
+ }

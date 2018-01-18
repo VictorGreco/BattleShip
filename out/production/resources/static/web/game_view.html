@@ -35,21 +35,21 @@
         </section>
     </main>
 
-    <section class="modal fade" id="myModal" role="dialog">
-        <div class="modal-dialog">
+    <section class="modal fade" id="myModal" role="dialog" ondragover = allowDrop(event) ondrop = drop(event)>
+        <div class="modal-dialog" ondragover = allowDrop(event) ondrop = drop(event)>
             <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
+            <div class="modal-content" ondragover = allowDrop(event) ondrop = drop(event)>
+                <div class="modal-header" ondragover = allowDrop(event) ondrop = drop(event)>
                     <!--<button type="button" class="close" data-dismiss="modal">&times;</button>-->
-                    <h4 class="modal-title">RADAR</h4>
+                    <h4 class="modal-title" ondragover = allowDrop(event) ondrop = drop(event)>RADAR</h4>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" ondragover = allowDrop(event) ondrop = drop(event)>
                     <table id="modalShipsGrid" style="text-align:center;"></table>
                     <aside id="hangar"></aside>
                 </div>
-                <div class="modal-footer">
-                    <button class="btn-lg btn-success" id="ships-confirm">Confirm</button>
-                    <button class="btn-lg btn-danger " id="ships-cancel" data-dismiss="modal">&times;</button>
+                <div class="modal-footer" ondragover = allowDrop(event) ondrop = drop(event)>
+                    <button class="btn-lg btn-success" id="ships-confirm" ondragover = allowDrop(event) ondrop = drop(event)>Confirm</button>
+                    <button class="btn-lg btn-danger " id="ships-cancel" data-dismiss="modal" ondragover = allowDrop(event) ondrop = drop(event)>&times;</button>
                 </div>
             </div>
         </div>
@@ -57,62 +57,5 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="game_view.js"></script>
-    <script>
-        var orientation = 'horizontal';
-         function allowDrop(ev) {
-                ev.preventDefault();
-            }
-
-        function dragStart(ev) {
-            ev.dataTransfer.setData("text", ev.target.id);
-        }
-
-        function drag(ev, orientation){
-            $('#'+ev.path[0].id+'').hide();
-
-
-        }
-
-        function drop(ev) {
-            ev.preventDefault();
-            console.log(ev);
-            var cellId = ev.target.id;
-            var shipId =  ev.dataTransfer.getData("text");
-            console.log(cellId);
-            console.log(shipId);
-            $('#'+shipId+'').show();
-            if(cellId != 'hangar0'){
-                cellId = cellId.split('_');
-                var shipLength = 0;
-                shipId == 'drag0' ? shipLength = 5 : '';
-                shipId == 'drag1' ? shipLength = 4 : '';
-                shipId == 'drag2' ? shipLength = 3 : '';
-                shipId == 'drag3' ? shipLength = 3 : '';
-                shipId == 'drag4' ? shipLength = 2 : '';
-                var idNumber = cellId[1].split('');
-                if( idNumber.length == 3){
-                    idNumber = idNumber[1]+idNumber[2];
-                }else{
-                    idNumber = idNumber[1]
-                }
-                console.log('id number'+idNumber);
-                console.log(shipLength+1);
-                if(1<=idNumber && idNumber <=(10-shipLength)+1){
-                    ev.target.appendChild(document.getElementById(shipId));
-                }else{
-                    alert("can't place");
-                }
-            }else{
-                ev.target.appendChild(document.getElementById(shipId));
-            }
-        }
-
-
-
-
-    </script>
-
-
-
 </body>
 </html>
