@@ -1,5 +1,14 @@
        // drag and drop functions outside the 'ready'
 
+    function playNoGo(){
+           var audio = document.getElementById("audio");
+           audio.play();
+     }
+//    function playAmbient(){
+//            var audio = document.getElementById("audio2");
+//            audio.play();
+//      }
+
         var shipsForPost = [{'type': 'Aircraft Carrier', 'shipPositions': null},
                             {'type': 'Battleship', 'shipPositions': null},
                             {'type': 'Submarine', 'shipPositions': null},
@@ -114,38 +123,28 @@
             }
             console.log(shipsForPost);
         }
-        $('#ships-confirm').click(function(){
-//            console.log(shipsForPost);
-            var allowPlacement = 0;
-            $(shipsForPost).each(function(){
-                var currentPositionList = this.shipPositions;
-                var currentType = this.type;
-                currentPositionList != undefined ? allowPlacement++ : '';
 
-            });
-//            allowPlacement === 5 ? console.log('ready to place'): console.log('Don"t forget to place ships');
-            if(allowPlacement === 5){
-                var gp = window.location.href.split('=')[1];
-//                console.log('ready to place');
-                $.post({
-                  url: "/api/games/players/"+ gp+"/ships",
-                  data: JSON.stringify(shipsForPost),
-                  dataType: "text",
-                  contentType: "application/json"
-                })
-                .done(function (response, status, jqXHR) {
-                       window.location.reload();
-                })
-                .fail(function (jqXHR, status, httpError) {
-                  alert("Failed to add pet: " + textStatus + " " + httpError);
-                })
-            }else{
-//                console.log('Don"t forget to place ships');
-            }
-        });
+         $('#ships-confirm').click(function(){
+        //            console.log(shipsForPost);
+                    var allowPlacement = 0;
+                    $(shipsForPost).each(function(){
+                        var currentPositionList = this.shipPositions;
+                        var currentType = this.type;
+                        currentPositionList != undefined ? allowPlacement++ : '';
+                    });
+                    if(allowPlacement === 5){
+                        var gp = window.location.href.split('=')[1];
+                        $.post({
+                          url: "/api/games/players/"+ gp +"/ships",
+                          data: JSON.stringify(shipsForPost),
+                          dataType: "text",
+                          contentType: "application/json"
+                        })
+                    }
+                });
+
     //end of drag and drop features
 $(function(){
-// url used to getJSON call.
     var url = "";
     url == "" ? url = window.location.href.split('=') : "";
     gpValue = url[1];
@@ -164,16 +163,34 @@ $(function(){
     if (data.Error === "ERROR"){
         unauthorizedPage();
     }else{
+        console.log(data);
         getPlayersInfo(data);
         getGrid("myShipGrid");
         getGrid("notMySalvoGrid");
         getGrid("modalShipsGrid");
         colorGrid(data);
-        onClickSomeTd();
-        $('#placeShipsBtn').click(placeShips);
+        onClickSomeTd(data);
+        if(data.Ships.length == 0){
+            $('#placeShipsBtn').show();
+            $('#placeShipsBtn').click(placeShips);
+        }else{
+             $('#placeShipsBtn').hide();
+        }
         getHangar();
         }
+
     });
+//    .done(playAmbient);
+
+    var previous = null;
+    var current = null;
+//    setInterval(function(){
+//        $.getJSON(url, function(data){
+//            console.log('refresh');
+//            colorGrid(data);
+//        });
+//    }, 2000);
+
 //[END CALLS]
 
 
@@ -190,24 +207,41 @@ function unauthorizedPage(){
 }
 
 //[USER INTERACTION FUNCTIONS]
-    function onClickSomeTd(){
+    function onClickSomeTd(data){
     var clickedCellNumber;
     var clickedTable;
     var clickedTdID;
         $('td').click(function(){
-             clickedItemID = this.id.split('_');
-             clickedCellNumber = clickedItemID[1];
-             clickedTable = clickedItemID[0];
+        var salvoes;
+        $(data.AllSalvOfGame).each(function(){
+            this.gamePlayerId === data.id ? salvoes = this.Salvoes : '';
+        });
+        var lastTurn = 0;
+        $(salvoes).each(function(){
+            this.Turn > lastTurn ? lastTurn = this.Turn : '';
+        });
+        var currenTurn = lastTurn + 1;
+        console.log(currenTurn);
+             clickedTdID = this.id.split('_');
+             clickedCellNumber = clickedTdID[1];
+             clickedTable = clickedTdID[0];
 
-            wantToFire(clickedCellNumber, clickedTable);
+            wantToFire(clickedCellNumber, clickedTable, currenTurn);
 
         });
     }
 
-    function wantToFire(place, tableId){
-        tableId == "notMySalvoGrid" ? alert("Do you want to fire on: " +place + " ?") : '';
-        tableId == "MySalvoGrid" ? alert("Can't fire on your grid") : '';
+    function wantToFire(place, tableId, currenTurn){
+        if(tableId == "notMySalvoGrid" && !$('#'+tableId+'_'+place).hasClass('mySalvo')){
+            alert("Do you want to fire on: " +place + " ?");
+            postSalvoes(currenTurn, [place]);
+        }else{
+            tableId == "myShipGrid" ? playNoGo() : '';
+        }
     }
+
+
+
 
 //[FUNCTIONS]
 
@@ -232,6 +266,18 @@ function unauthorizedPage(){
        .fail(function (jqXHR, status, httpError) {
          alert("Failed to add pet:"+ httpError);
        })
+    }
+    function postSalvoes(turnNumber, salvoPosition){
+        var url = window.location.href.split('=');
+        $.post({
+             url: '/api/games/players/'+url[1]+'/salvos',
+             data: JSON.stringify({"turnNumber": turnNumber,"salvoLocations": salvoPosition}
+           ),
+             dataType: "text",
+             contentType: "application/json"
+           }).done(function(){
+                $('#notMySalvoGrid_'+salvoPosition).addClass('fired');
+           })
     }
     function getGrid(tableId){
         $("#"+tableId)

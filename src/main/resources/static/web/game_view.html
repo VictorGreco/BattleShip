@@ -26,7 +26,9 @@
             </article>
             <article class="col-lg-6">
                 <div id="displayPlayers" class="displayPlayers"></div>
-                <div id="chat">Some kind of chat</div>
+                <div id="chat">Some kind of chat
+
+                </div>
                 <div id="menu">
                     <a class="btn btn-danger" id="placeShipsBtn" data-toggle="modal" href="#myModal">Place Ships</a>
                     <a class="btn btn-danger" id="exitGame" href="http://localhost:8080/web/games.html">Exit Game</a>
@@ -40,7 +42,6 @@
             <!-- Modal content-->
             <div class="modal-content" ondragover = allowDrop(event) ondrop = drop(event)>
                 <div class="modal-header" ondragover = allowDrop(event) ondrop = drop(event)>
-                    <!--<button type="button" class="close" data-dismiss="modal">&times;</button>-->
                     <h4 class="modal-title" ondragover = allowDrop(event) ondrop = drop(event)>RADAR</h4>
                 </div>
                 <div class="modal-body" ondragover = allowDrop(event) ondrop = drop(event)>
@@ -54,6 +55,10 @@
             </div>
         </div>
     </section>
+
+    <audio id="audio" src="resources/audio/NFF-no-go.wav" ></audio>
+    <!--<audio id="audio2" src="resources/audio/ambientalMusic.mp3" ></audio>-->
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="game_view.js"></script>

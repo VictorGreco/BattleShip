@@ -55,6 +55,7 @@ a{
     align-item:center;
     background-color: rgba(255,255,255,0.5);
 }
+
 .list-group-item span{
     color: black;
     font-size: 17px;

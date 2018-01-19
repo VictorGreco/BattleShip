@@ -100,7 +100,7 @@ td:first-child, th{
     border: 0.5px solid white;
 }
 #myShipGrid td{
-    border: 0.5px solid black;
+    /*border: 0.5px solid black;*/
 
 }
 #notMySalvoGrid td:first-child, #modalShipsGrid td:first-child{
@@ -219,6 +219,9 @@ td:hover{
     width: 100%;
     height: 20%;
  }
+ .hangar:hover{
+    background-color: rgba(0, 0, 0, 0.7);
+ }
 
  .horizontal{
 
@@ -236,9 +239,4 @@ td:hover{
  #modalShipsGrid td{
     height: 46px;
     width: 46px;
- }
-
- .dragging{
-    height: 40px;
-    width: 40px;
  }

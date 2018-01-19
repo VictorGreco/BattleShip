@@ -1,5 +1,14 @@
        // drag and drop functions outside the 'ready'
 
+    function playNoGo(){
+           var audio = document.getElementById("audio");
+           audio.play();
+     }
+//    function playAmbient(){
+//            var audio = document.getElementById("audio2");
+//            audio.play();
+//      }
+
         var shipsForPost = [{'type': 'Aircraft Carrier', 'shipPositions': null},
                             {'type': 'Battleship', 'shipPositions': null},
                             {'type': 'Submarine', 'shipPositions': null},
@@ -13,19 +22,19 @@
         function dragStart(ev) {
 //             $('#'+ev.path[0].id+'').addClass('dragging');
             ev.dataTransfer.setData("text", ev.target.id);
+            $('td').removeClass(ev.target.id);
 
         }
         function drag(ev){
             $('#'+ev.path[0].id+'').hide();
 
         }
-
-        function drop(ev) {
+        function drop(ev, finalPositions) {
             ev.preventDefault();
             var cellId = ev.target.id;
             var shipId =  ev.dataTransfer.getData("text");
-//            $('#'+shipId+'').removeClass('dragging');
             $('#'+shipId+'').show();
+            var finalPositions = [];
             if(!$('#'+cellId+'').hasClass('hangar')){
                 cellId = cellId.split('_');
                 var shipLength = 0;
@@ -43,70 +52,99 @@
                 if($('#'+shipId+'').hasClass('dispHorizontal')){
                     idNumber.length == 3 ? idNumber = idNumber[1]+idNumber[2] : idNumber = idNumber[1];
                     if(1<=idNumber && idNumber <=(10-shipLength)+1){
-                        ev.target.appendChild(document.getElementById(shipId));
                         for (let i = 0; i < shipLength; i++){
                             var number = +cellNum + i;
                             var position = cellLetter + number;
                             setOfPositions.indexOf(position) == -1 ? setOfPositions.push(position) : '';
                         }
+                        var allow = true;
+                        $(setOfPositions).each(function(){
+                            $('#modalShipsGrid_'+this).hasClass('drag0') ? allow = false: '';
+                            $('#modalShipsGrid_'+this).hasClass('drag1') ? allow = false: '';
+                            $('#modalShipsGrid_'+this).hasClass('drag2') ? allow = false: '';
+                            $('#modalShipsGrid_'+this).hasClass('drag3') ? allow = false: '';
+                            $('#modalShipsGrid_'+this).hasClass('drag4') ? allow = false: '';
+                        });
+                        if(allow){
+                            $('td').removeClass(shipId);
+                            $(setOfPositions).each(function(){
+                                $('#modalShipsGrid_'+this).addClass(shipId);
+                            });
+                           ev.target.appendChild(document.getElementById(shipId));
+                           shipId == 'drag0' ?  shipsForPost[0].shipPositions = setOfPositions: '';
+                           shipId == 'drag1' ?  shipsForPost[1].shipPositions = setOfPositions: '';
+                           shipId == 'drag2' ?  shipsForPost[2].shipPositions = setOfPositions: '';
+                           shipId == 'drag3' ?  shipsForPost[3].shipPositions = setOfPositions: '';
+                           shipId == 'drag4' ?  shipsForPost[4].shipPositions = setOfPositions: '';
+                        }
                     }
                 }else{
-                    var holder = 'true';
+                    var allow = true;
+                    var holder = true;
                     $(exclusionLetters).each(function(){
-                        idNumber[0] == this ? holder = 'false' : '';
+                        idNumber[0] == this ? holder = false : '';
                     });
-                    holder == 'true' ? ev.target.appendChild(document.getElementById(shipId)) : '';
                     var posOfLetterInArray = letterArray.indexOf(cellLetter);
-                    if( posOfLetterInArray != -1 && holder == 'true'){
+                    if( posOfLetterInArray != -1 && holder){
                         for(let i = 0; i < shipLength; i++ ){
                             var cellLetter = letterArray[posOfLetterInArray+i];
                             var position = cellLetter + cellNum;
                             setOfPositions.indexOf(position) == -1 ? setOfPositions.push(position) : '';
                         }
+                         $(setOfPositions).each(function(){
+                            $('#modalShipsGrid_'+this).hasClass('drag0') ? allow = false: '';
+                            $('#modalShipsGrid_'+this).hasClass('drag1') ? allow = false: '';
+                            $('#modalShipsGrid_'+this).hasClass('drag2') ? allow = false: '';
+                            $('#modalShipsGrid_'+this).hasClass('drag3') ? allow = false: '';
+                            $('#modalShipsGrid_'+this).hasClass('drag4') ? allow = false: '';
+                        });
+                        if(allow){
+                        $('td').removeClass(shipId);
+                        $(setOfPositions).each(function(){
+                            $('#modalShipsGrid_'+this).addClass(shipId);
+                        });
+                        ev.target.appendChild(document.getElementById(shipId));
+                        shipId == 'drag0' ?  shipsForPost[0].shipPositions = setOfPositions: '';
+                        shipId == 'drag1' ?  shipsForPost[1].shipPositions = setOfPositions: '';
+                        shipId == 'drag2' ?  shipsForPost[2].shipPositions = setOfPositions: '';
+                        shipId == 'drag3' ?  shipsForPost[3].shipPositions = setOfPositions: '';
+                        shipId == 'drag4' ?  shipsForPost[4].shipPositions = setOfPositions: '';
+                        }
                     }
                 }
             }else{
+                $('td').removeClass(shipId);
                 ev.target.appendChild(document.getElementById(shipId));
+                shipId == 'drag0' ?  shipsForPost[0].shipPositions = null: '';
+                shipId == 'drag1' ?  shipsForPost[1].shipPositions = null: '';
+                shipId == 'drag2' ?  shipsForPost[2].shipPositions = null: '';
+                shipId == 'drag3' ?  shipsForPost[3].shipPositions = null: '';
+                shipId == 'drag4' ?  shipsForPost[4].shipPositions = null: '';
             }
-            shipId == 'drag0' ?  shipsForPost[0].shipPositions = setOfPositions: '';
-            shipId == 'drag1' ?  shipsForPost[1].shipPositions = setOfPositions: '';
-            shipId == 'drag2' ?  shipsForPost[2].shipPositions = setOfPositions: '';
-            shipId == 'drag3' ?  shipsForPost[3].shipPositions = setOfPositions: '';
-            shipId == 'drag4' ?  shipsForPost[4].shipPositions = setOfPositions: '';
             console.log(shipsForPost);
         }
-        $('#ships-confirm').click(function(){
-            console.log(shipsForPost);
-            var allowPlacement = 0;
-            $(shipsForPost).each(function(){
-                var currentPositionList = this.shipPositions;
-                var currentType = this.type;
-                currentPositionList != undefined ? allowPlacement++ : '';
 
-            });
-//            allowPlacement === 5 ? console.log('ready to place'): console.log('Don"t forget to place ships');
-            if(allowPlacement === 5){
-                var gp = window.location.href.split('=')[1];
-                console.log('ready to place');
-                $.post({
-                  url: "/api/games/players/"+ gp+"/ships",
-                  data: JSON.stringify(shipsForPost),
-                  dataType: "text",
-                  contentType: "application/json"
-                })
-                .done(function (response, status, jqXHR) {
-                       window.location.reload();
-                })
-                .fail(function (jqXHR, status, httpError) {
-                  alert("Failed to add pet: " + textStatus + " " + httpError);
-                })
-            }else{
-                console.log('Don"t forget to place ships');
-            }
-        });
+         $('#ships-confirm').click(function(){
+        //            console.log(shipsForPost);
+                    var allowPlacement = 0;
+                    $(shipsForPost).each(function(){
+                        var currentPositionList = this.shipPositions;
+                        var currentType = this.type;
+                        currentPositionList != undefined ? allowPlacement++ : '';
+                    });
+                    if(allowPlacement === 5){
+                        var gp = window.location.href.split('=')[1];
+                        $.post({
+                          url: "/api/games/players/"+ gp +"/ships",
+                          data: JSON.stringify(shipsForPost),
+                          dataType: "text",
+                          contentType: "application/json"
+                        })
+                    }
+                });
+
     //end of drag and drop features
 $(function(){
-// url used to getJSON call.
     var url = "";
     url == "" ? url = window.location.href.split('=') : "";
     gpValue = url[1];
@@ -125,16 +163,34 @@ $(function(){
     if (data.Error === "ERROR"){
         unauthorizedPage();
     }else{
+        console.log(data);
         getPlayersInfo(data);
         getGrid("myShipGrid");
         getGrid("notMySalvoGrid");
         getGrid("modalShipsGrid");
         colorGrid(data);
-        onClickSomeTd();
-        $('#placeShipsBtn').click(placeShips);
+        onClickSomeTd(data);
+        if(data.Ships.length == 0){
+            $('#placeShipsBtn').show();
+            $('#placeShipsBtn').click(placeShips);
+        }else{
+             $('#placeShipsBtn').hide();
+        }
         getHangar();
         }
+
     });
+//    .done(playAmbient);
+
+    var previous = null;
+    var current = null;
+//    setInterval(function(){
+//        $.getJSON(url, function(data){
+//            console.log('refresh');
+//            colorGrid(data);
+//        });
+//    }, 2000);
+
 //[END CALLS]
 
 
@@ -151,24 +207,41 @@ function unauthorizedPage(){
 }
 
 //[USER INTERACTION FUNCTIONS]
-    function onClickSomeTd(){
+    function onClickSomeTd(data){
     var clickedCellNumber;
     var clickedTable;
     var clickedTdID;
         $('td').click(function(){
-             clickedItemID = this.id.split('_');
-             clickedCellNumber = clickedItemID[1];
-             clickedTable = clickedItemID[0];
+        var salvoes;
+        $(data.AllSalvOfGame).each(function(){
+            this.gamePlayerId === data.id ? salvoes = this.Salvoes : '';
+        });
+        var lastTurn = 0;
+        $(salvoes).each(function(){
+            this.Turn > lastTurn ? lastTurn = this.Turn : '';
+        });
+        var currenTurn = lastTurn + 1;
+        console.log(currenTurn);
+             clickedTdID = this.id.split('_');
+             clickedCellNumber = clickedTdID[1];
+             clickedTable = clickedTdID[0];
 
-            wantToFire(clickedCellNumber, clickedTable);
+            wantToFire(clickedCellNumber, clickedTable, currenTurn);
 
         });
     }
 
-    function wantToFire(place, tableId){
-        tableId == "notMySalvoGrid" ? alert("Do you want to fire on: " +place + " ?") : '';
-        tableId == "MySalvoGrid" ? alert("Can't fire on your grid") : '';
+    function wantToFire(place, tableId, currenTurn){
+        if(tableId == "notMySalvoGrid" && !$('#'+tableId+'_'+place).hasClass('mySalvo')){
+            alert("Do you want to fire on: " +place + " ?");
+            postSalvoes(currenTurn, [place]);
+        }else{
+            tableId == "myShipGrid" ? playNoGo() : '';
+        }
     }
+
+
+
 
 //[FUNCTIONS]
 
@@ -193,6 +266,18 @@ function unauthorizedPage(){
        .fail(function (jqXHR, status, httpError) {
          alert("Failed to add pet:"+ httpError);
        })
+    }
+    function postSalvoes(turnNumber, salvoPosition){
+        var url = window.location.href.split('=');
+        $.post({
+             url: '/api/games/players/'+url[1]+'/salvos',
+             data: JSON.stringify({"turnNumber": turnNumber,"salvoLocations": salvoPosition}
+           ),
+             dataType: "text",
+             contentType: "application/json"
+           }).done(function(){
+                $('#notMySalvoGrid_'+salvoPosition).addClass('fired');
+           })
     }
     function getGrid(tableId){
         $("#"+tableId)
@@ -316,7 +401,8 @@ function unauthorizedPage(){
                                 var shipParentId = $('#'+targetId+'').parent()[0].id;
                                 var shipParentIdLetter = shipParentId.split('_')[1].split('')[0];
                                 var shipParentIdNum = shipParentId.split('_')[1].split('');
-                                var holder = 'true';
+                                var holder = true;
+
                                  var setOfPositions = [];
                                 var letterArray = ['A','B','C','D','E','F','G','H','I','J'];
                                 shipParentIdNum.length == 3 ? shipParentIdNum = shipParentIdNum[1]+shipParentIdNum[2] : shipParentIdNum = shipParentIdNum[1];
@@ -327,20 +413,75 @@ function unauthorizedPage(){
                                 targetId == 'drag3' ? (shipLength = 3 , exclusionLetters = ['I','J']) : '';
                                 targetId == 'drag4' ? (shipLength = 2 , exclusionLetters = ['J']) : '';
                                 $(exclusionLetters).each(function(){
-                                    shipParentIdLetter == this ? holder = 'false' : '';
+                                    shipParentIdLetter == this ? holder = false : '';
                                 });
-                                if($('#'+targetId+'').hasClass('dispHorizontal') && holder != 'false'){
-                                    $('#'+targetId+'').removeClass('dispHorizontal').addClass('dispVertical');
-                                    var width = $('#'+targetId+'').css('width');
-                                    var height = $('#'+targetId+'').css('height');
-                                     $('#'+targetId+'').css({'width':height,'height':width});
+                                if($('#'+targetId+'').hasClass('dispHorizontal') && holder){
+                                    var posOfLetterInArray = letterArray.indexOf(shipParentIdLetter);
+
+                                    for(let i = 0; i < shipLength; i++ ){
+                                        var cellLetter = letterArray[posOfLetterInArray+i];
+                                        var position = cellLetter + shipParentIdNum;
+                                        setOfPositions.indexOf(position) == -1 ? setOfPositions.push(position) : '';
+                                    }
+                                    var allow = true;
+                                    $(setOfPositions).each(function(){
+                                        $('#modalShipsGrid_'+this).hasClass('drag0') && 'drag0' !=  targetId ? allow = false: '';
+                                        $('#modalShipsGrid_'+this).hasClass('drag1') && 'drag1' !=  targetId? allow = false: '';
+                                        $('#modalShipsGrid_'+this).hasClass('drag2') && 'drag2' !=  targetId? allow = false: '';
+                                        $('#modalShipsGrid_'+this).hasClass('drag3') && 'drag3' !=  targetId? allow = false: '';
+                                        $('#modalShipsGrid_'+this).hasClass('drag4') && 'drag4' !=  targetId? allow = false: '';
+                                    });
+                                    if(allow){
+                                        $('td').removeClass(targetId);
+                                        $(setOfPositions).each(function(){
+                                            $('#modalShipsGrid_'+this).addClass(targetId);
+                                        });
+                                       targetId == 'drag0' ?  shipsForPost[0].shipPositions = setOfPositions: '';
+                                       targetId == 'drag1' ?  shipsForPost[1].shipPositions = setOfPositions: '';
+                                       targetId == 'drag2' ?  shipsForPost[2].shipPositions = setOfPositions: '';
+                                       targetId == 'drag3' ?  shipsForPost[3].shipPositions = setOfPositions: '';
+                                       targetId == 'drag4' ?  shipsForPost[4].shipPositions = setOfPositions: '';
+
+                                       $('#'+targetId+'').removeClass('dispHorizontal').addClass('dispVertical');
+                                       var width = $('#'+targetId+'').css('width');
+                                       var height = $('#'+targetId+'').css('height');
+                                       $('#'+targetId+'').css({'width':height,'height':width});
+                                    }
+
 
                                 }else{
-                                    if(1<=shipParentIdNum && shipParentIdNum <=(10-shipLength)+1 && holder !='false'){
-                                        $('#'+targetId+'').removeClass('dispVertical').addClass('dispHorizontal');
-                                        var width = $('#'+targetId+'').css('width');
-                                        var height = $('#'+targetId+'').css('height');
-                                        $('#'+targetId+'').css({'width':height,'height':width});
+                                    if(1<=shipParentIdNum && shipParentIdNum <=(10-shipLength)+1 && holder){
+                                        for (let i = 0; i < shipLength; i++){
+                                            var number = +shipParentIdNum + i;
+
+                                            var position = shipParentIdLetter + number;
+                                            setOfPositions.indexOf(position) == -1 ? setOfPositions.push(position) : '';
+                                        }
+
+                                        var allow = true;
+                                        $(setOfPositions).each(function(){
+                                            $('#modalShipsGrid_'+this).hasClass('drag0') && 'drag0' !=  targetId ? allow = false: '';
+                                            $('#modalShipsGrid_'+this).hasClass('drag1') && 'drag1' !=  targetId ? allow = false: '';
+                                            $('#modalShipsGrid_'+this).hasClass('drag2') && 'drag2' !=  targetId ? allow = false: '';
+                                            $('#modalShipsGrid_'+this).hasClass('drag3') && 'drag3' !=  targetId ? allow = false: '';
+                                            $('#modalShipsGrid_'+this).hasClass('drag4') && 'drag4' !=  targetId ? allow = false: '';
+                                        });
+                                        if(allow){
+                                            $('td').removeClass(targetId);
+                                            $(setOfPositions).each(function(){
+                                                $('#modalShipsGrid_'+this).addClass(targetId);
+                                            });
+                                           targetId == 'drag0' ?  shipsForPost[0].shipPositions = setOfPositions: '';
+                                           targetId == 'drag1' ?  shipsForPost[1].shipPositions = setOfPositions: '';
+                                           targetId == 'drag2' ?  shipsForPost[2].shipPositions = setOfPositions: '';
+                                           targetId == 'drag3' ?  shipsForPost[3].shipPositions = setOfPositions: '';
+                                           targetId == 'drag4' ?  shipsForPost[4].shipPositions = setOfPositions: '';
+
+                                           $('#'+targetId+'').removeClass('dispVertical').addClass('dispHorizontal');
+                                           var width = $('#'+targetId+'').css('width');
+                                           var height = $('#'+targetId+'').css('height');
+                                           $('#'+targetId+'').css({'width':height,'height':width});
+                                        }
                                     }
                                 }
                             }

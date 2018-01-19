@@ -25,6 +25,9 @@ public class CodePenguinController {
 
     @Autowired
     private ShipRepository shipRepository;
+
+    @Autowired
+    private SalvoRepository salvoRepository;
 //[ENDS AUTOWIRED REPOSITORIES]
 
 //[START REQUESTS MAPPINGS]
@@ -85,7 +88,7 @@ public class CodePenguinController {
     }
 
     @RequestMapping(path = "/games/players/{gamePlayerId}/ships", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> genShips(Authentication authentication,
+    public ResponseEntity<Map<String, Object>> postShips(Authentication authentication,
                                                         @PathVariable long gamePlayerId,
                                                         @RequestBody List<Ship>shipList) {
         if (authentication != null){
@@ -110,6 +113,30 @@ public class CodePenguinController {
             return new ResponseEntity<>(makeResponseEntityMap("error", "Not Logged User"), HttpStatus.UNAUTHORIZED);
         }
     }
+
+    @RequestMapping(path = "/games/players/{gamePlayerId}/salvos", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> postSalvo(Authentication authentication,
+                                                         @PathVariable long gamePlayerId,
+                                                         @RequestBody Salvo salvo) {
+        if (authentication != null){
+            if(gamePlayerRepository.findOne(gamePlayerId) != null){
+                GamePlayer gamePlayer = gamePlayerRepository.findOne(gamePlayerId);
+                Player user = playerRepository.findByUserName(authentication.getName());
+                if(gamePlayer.getPlayer().getId() == user.getId()){
+                    gamePlayer.addSalvo(salvo);
+                    salvoRepository.save(salvo);
+                    return new ResponseEntity<>(makeResponseEntityMap("OK", ""), HttpStatus.CREATED);
+                }else{
+                    return new ResponseEntity<>(makeResponseEntityMap("error", "Your're Not the Owner"), HttpStatus.UNAUTHORIZED);
+                }
+            }else{
+                return new ResponseEntity<>(makeResponseEntityMap("error", "No GamePlayer"), HttpStatus.UNAUTHORIZED);
+            }
+        }else{
+            return new ResponseEntity<>(makeResponseEntityMap("error", "Not Logged User"), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
 
     @RequestMapping("/game_view/{gamePlayerId}")
     public Map<String, Object> makeGameViewDTO(@PathVariable long gamePlayerId, Authentication authentication){
