@@ -233,8 +233,7 @@ function unauthorizedPage(){
 
     function wantToFire(place, tableId, currenTurn){
         if(tableId == "notMySalvoGrid" && !$('#'+tableId+'_'+place).hasClass('mySalvo')){
-            alert("Do you want to fire on: " +place + " ?");
-            postSalvoes(currenTurn, [place]);
+        confirm("Do you want to fire on: " +place + " ?") ?  postSalvoes(currenTurn, [place]) : '';
         }else{
             tableId == "myShipGrid" ? playNoGo() : '';
         }

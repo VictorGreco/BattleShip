@@ -96,7 +96,7 @@ public class CodePenguinController {
                 GamePlayer gamePlayer = gamePlayerRepository.findOne(gamePlayerId);
                 Player user = playerRepository.findByUserName(authentication.getName());
                 if(gamePlayer.getPlayer().getId() == user.getId()){
-                    if(gamePlayer.getShips().isEmpty()){
+                    if(gamePlayer.getShips().isEmpty() && shipList.size() == 5){
                         shipList.stream().forEach(ship -> gamePlayer.addShip(ship));
                         shipList.stream().forEach(ship -> shipRepository.save(ship));
                         return new ResponseEntity<>(makeResponseEntityMap("OK", ""), HttpStatus.CREATED);
