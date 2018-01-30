@@ -39,6 +39,7 @@ function unauthorized(data){
 function newGame(){
     $.post({url: '/api/games'})
     .done(function(response, status, jqXHR){
+    console.log(response.gpId);
         window.location = 'game_view.html?gp='+response.gpId;
     })
     .fail(function(jqXHR, status, httpError){

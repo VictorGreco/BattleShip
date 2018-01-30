@@ -159,26 +159,28 @@ $(function(){
 
 //[START CALLS]
     $.getJSON(url, function(data){
-
-    if (data.Error === "ERROR"){
+        console.log('getting JSON');
+    })
+    .done(function(data){
+            console.log(data);
+            console.log('OK JSON');
+            getPlayersInfo(data.OK);
+            getGrid("myShipGrid");
+            getGrid("notMySalvoGrid");
+            getGrid("modalShipsGrid");
+            colorGrid(data.OK);
+            onClickSomeTd(data.OK);
+            if(data.OK.Ships.length == 0){
+                $('#placeShipsBtn').show();
+                $('#placeShipsBtn').click(placeShips);
+            }else{
+                 $('#placeShipsBtn').hide();
+            }
+            getHangar();
+    })
+    .fail(function(){
+        console.log('ERROR JSON');
         unauthorizedPage();
-    }else{
-        console.log(data);
-        getPlayersInfo(data);
-        getGrid("myShipGrid");
-        getGrid("notMySalvoGrid");
-        getGrid("modalShipsGrid");
-        colorGrid(data);
-        onClickSomeTd(data);
-        if(data.Ships.length == 0){
-            $('#placeShipsBtn').show();
-            $('#placeShipsBtn').click(placeShips);
-        }else{
-             $('#placeShipsBtn').hide();
-        }
-        getHangar();
-        }
-
     });
 //    .done(playAmbient);
 
@@ -213,8 +215,8 @@ function unauthorizedPage(){
     var clickedTdID;
         $('td').click(function(){
         var salvoes;
-        $(data.AllSalvOfGame).each(function(){
-            this.gamePlayerId === data.id ? salvoes = this.Salvoes : '';
+        $(data.playerTurns).each(function(){
+            this.gamePlayerId === data.id ? salvoes = this.turns : '';
         });
         var lastTurn = 0;
         $(salvoes).each(function(){
@@ -226,15 +228,14 @@ function unauthorizedPage(){
              clickedCellNumber = clickedTdID[1];
              clickedTable = clickedTdID[0];
 
-            wantToFire(clickedCellNumber, clickedTable, currenTurn);
+            wantToFire(clickedCellNumber, clickedTable);
 
         });
     }
 
-    function wantToFire(place, tableId, currenTurn){
+    function wantToFire(place, tableId){
         if(tableId == "notMySalvoGrid" && !$('#'+tableId+'_'+place).hasClass('mySalvo')){
-            alert("Do you want to fire on: " +place + " ?");
-            postSalvoes(currenTurn, [place]);
+        confirm("Do you want to fire on: " +place + " ?") ?  postSalvoes() : '';
         }else{
             tableId == "myShipGrid" ? playNoGo() : '';
         }
@@ -267,12 +268,12 @@ function unauthorizedPage(){
          alert("Failed to add pet:"+ httpError);
        })
     }
-    function postSalvoes(turnNumber, salvoPosition){
+    function postSalvoes(){
+    var salvoPosition = ["A5", "B7", "C9"];
         var url = window.location.href.split('=');
         $.post({
              url: '/api/games/players/'+url[1]+'/salvos',
-             data: JSON.stringify({"turnNumber": turnNumber,"salvoLocations": salvoPosition}
-           ),
+             data: JSON.stringify(salvoPosition),
              dataType: "text",
              contentType: "application/json"
            }).done(function(){
@@ -340,15 +341,15 @@ function unauthorizedPage(){
     }
 
     function colorAllSalvoes(data){
-        $(data.AllSalvOfGame).each(function(){
+        $(data.playerTurns).each(function(){
             this.gamePlayerId === data.id ? colorSalvoPJ_Place(this, '#notMySalvoGrid_', 'mySalvo')
             : colorSalvoPJ_Place(this, '#myShipGrid_', 'enemySalvo');
         });
     }
 
     function colorSalvoPJ_Place(player, grid, theClass){
-        $(player.Salvoes).each(function(){
-            var Locations = this["Locations"];
+        $(player.turns).each(function(){
+            var Locations = this["hits"]["shotLocations"];
             var Turn = this["Turn"];
             $(Locations).each(function(){
                 var currLoc = $(grid+this);

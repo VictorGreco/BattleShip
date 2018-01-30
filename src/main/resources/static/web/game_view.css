@@ -77,6 +77,10 @@ body{
     color: white;
     margin-top: 10px;
 }
+#chat{
+    display:flex;
+    flex-direction: row;
+    }
 #errorMessage{
     display: flex;
     justify-content: center;
@@ -125,7 +129,7 @@ td:hover{
 .mySalvo{
     background-color: rgba(255,255,255,0.4);
 }
-.enemySalvo{
+.fail{
     background-color: yellow;
 
 }
@@ -184,10 +188,10 @@ td:hover{
     justify-content: space-around;
     align-items: flex-start;
  }
- .aircraft,.battleship, .submarine, .destroyer, .petrolBoat{
+ .carrier,.battleship, .submarine, .destroyer, .petrolBoat{
     background-color: green;
  }
- .aircraft{
+ .carrier{
     margin-top: -20px;
     width: 235px;
     height: 46px;
@@ -239,6 +243,11 @@ td:hover{
  #modalShipsGrid td{
     height: 46px;
     width: 46px;
+ }
+ .chat{
+    width:50%;
+    height: 100%;
+    border: 1px solid white;
  }
 
 

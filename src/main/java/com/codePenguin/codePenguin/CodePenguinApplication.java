@@ -91,18 +91,25 @@ public class CodePenguinApplication extends SpringBootServletInitializer {
             Ship battleship = new Ship("Battleship", battleship_Loc, gamePlayer1);
             Ship carrier = new Ship("Carrier", carrier_Loc, gamePlayer1);
             //SHIPS GAMEPLAYER 2
-            Ship patrolBoat2 = new Ship("PatrolBoat2", patrolBoat_Loc, gamePlayer2);
-            Ship carrier2 = new Ship("Carrier2", carrier_Loc, gamePlayer2);
+            Ship patrolBoat2 = new Ship("PatrolBoat", patrolBoat_Loc, gamePlayer2);
+            Ship carrier2 = new Ship("Carrier", carrier_Loc, gamePlayer2);
+
+
+            //SINGLE SHOTS
+            SingleShot shot1 = new SingleShot("J1");
+            SingleShot shot2 = new SingleShot("B7");
+            SingleShot shot3 = new SingleShot("J3");
+
 
             //SALVOES POSITIONS
-            List<String> turn1Player1SalvoPos = new ArrayList<>(Arrays.asList("J1", "B7", "J3", "A7", "E7"));
-            List<String> turn1Player2SalvoPos = new ArrayList<>(Arrays.asList("I1", "C7", "I3"));
+            List<SingleShot> turn1Player1SalvoPos = new ArrayList<>(Arrays.asList(shot1, shot2 , shot3));
+            List<SingleShot> turn1Player2SalvoPos = new ArrayList<>(Arrays.asList(shot1,shot2 , shot3));
 
-            List<String> turn2Player1SalvoPos = new ArrayList<>(Arrays.asList("J4", "J5", "J6"));
-            List<String> turn2Player2SalvoPos = new ArrayList<>(Arrays.asList("I4", "I5", "I6"));
+            List<SingleShot> turn2Player1SalvoPos = new ArrayList<>(Arrays.asList(shot1,shot2 , shot3));
+            List<SingleShot> turn2Player2SalvoPos = new ArrayList<>(Arrays.asList(shot1,shot2 , shot3));
 
-            List<String> turn3Player1SalvoPos = new ArrayList<>(Arrays.asList("J8", "J9", "J10"));
-            List<String> turn3Player2SalvoPos = new ArrayList<>(Arrays.asList("I8", "I9", "I10"));
+            List<SingleShot> turn3Player1SalvoPos = new ArrayList<>(Arrays.asList(shot1,shot2 , shot3));
+            List<SingleShot> turn3Player2SalvoPos = new ArrayList<>(Arrays.asList(shot1,shot2 , shot3));
 
 //            int Turn = 1;
 
@@ -177,10 +184,6 @@ public class CodePenguinApplication extends SpringBootServletInitializer {
             scoreRepository.save(scoreGame3Player1);
             scoreRepository.save(scoreGame3Player3);
 
-            System.out.println("a");
-            System.out.println(playerRepository.findByUserName("victor@gmail.com").getUserName());
-            System.out.println("b");
-            System.out.println(player2.getUserName());
         };
 
     }

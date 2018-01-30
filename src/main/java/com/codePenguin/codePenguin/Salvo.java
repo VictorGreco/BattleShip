@@ -11,6 +11,7 @@ public class Salvo {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private int turnNumber;
+    private int shotsPerTurn;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="gamePlayer_id")
@@ -18,15 +19,18 @@ public class Salvo {
 
     @ElementCollection
     @Column(name="salvo_Locations")
-    private List<String> salvoLocations = new ArrayList<>();
+    private List<SingleShot> salvoLocations = new ArrayList<>();
 
-    public Salvo() {}
+    public Salvo() {
+        this.shotsPerTurn = 1;
+    }
 
-    public Salvo(int turnNumber, GamePlayer gamePlayer, List<String> salvoLocations) {
+    public Salvo(int turnNumber, GamePlayer gamePlayer, List<SingleShot> salvoLocations) {
         this.turnNumber = turnNumber;
         this.gamePlayer = gamePlayer;
         this.salvoLocations = salvoLocations;
         gamePlayer.addSalvo(this);
+        this.shotsPerTurn = 1;
     }
 
     //getter && setters
@@ -38,7 +42,7 @@ public class Salvo {
         return turnNumber;
     }
 
-    public List<String> getSalvoLocations() {
+    public List<SingleShot> getSalvoLocations() {
         return salvoLocations;
     }
 
@@ -50,4 +54,11 @@ public class Salvo {
         this.gamePlayer = gamePlayer;
     }
 
+    public int getShotsPerTurn() {
+        return shotsPerTurn;
+    }
+
+    public void setShotsPerTurn(int shotsPerTurn) {
+        this.shotsPerTurn = shotsPerTurn;
+    }
 }
