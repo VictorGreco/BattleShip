@@ -117,13 +117,14 @@ public class CodePenguinController {
     @RequestMapping(path = "/games/players/{gamePlayerId}/salvos", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> postSalvo(Authentication authentication,
                                                          @PathVariable long gamePlayerId,
-                                                         @RequestBody List<String> shotsOfTurn) {
+                                                         @RequestBody List<String> singShotsLoc) {
         if (authentication != null){
             if(gamePlayerRepository.findOne(gamePlayerId) != null){
                 Game currentGame = gamePlayerRepository.findOne(gamePlayerId).getGame();
                 Player user = playerRepository.findByUserName(authentication.getName());
                 GamePlayer ownerGp = null;
                 GamePlayer otherGp = null;
+
                 List<SingleShot> singleShotList = new ArrayList<>();
                 for (GamePlayer gamePlayer: currentGame.getGamePlayers()
                      ) {
@@ -133,22 +134,13 @@ public class CodePenguinController {
                          otherGp = gamePlayer;
                     }
                 }
-
-                for (String shotLoc: shotsOfTurn
+                for (String shotLoc: singShotsLoc
                      ) {
                     SingleShot newShot = new SingleShot(shotLoc);
-                    for (Ship ship: otherGp.getShips()
-                         ) {
-                        if(ship.getShipPositions().contains(newShot.getLocation())){
-                            newShot.setStatus(true);
-                            int hitTimes =ship.getHitTimes();
-                            hitTimes ++;
-                            ship.setHitTimes(hitTimes);
-                        }
-                    }
                     singleShotList.add(newShot);
                 }
-                Salvo newSalvo = new Salvo(1, ownerGp, singleShotList);
+                long currentTurn = ownerGp.getSalvoes().stream().count() + 1;
+                Salvo newSalvo = new Salvo(currentTurn, ownerGp, singleShotList);
                 ownerGp.addSalvo(newSalvo);
                 salvoRepository.save(newSalvo);
                     return new ResponseEntity<>(makeResponseEntityMap("OK", ""), HttpStatus.CREATED);
@@ -169,6 +161,17 @@ public class CodePenguinController {
         Game myGame = myGamePlayer.getGame();
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
 
+        List<Salvo> AllSalvoOfGame = new ArrayList<>();
+
+        for (GamePlayer gameplayer: myGame.getGamePlayers()
+             ) {
+            for (Salvo salvo: gameplayer.getSalvoes()
+                 ) {
+                AllSalvoOfGame.add(salvo);
+            }
+        }
+
+        AllSalvoOfGame.sort(Comparator.comparing(a -> a.getTurnNumber()));
 
         if(myGamePlayer.getPlayer().equals(user)){
             dto.put("id", myGamePlayer.getId());
@@ -181,10 +184,13 @@ public class CodePenguinController {
                     .stream()
                     .map( ship-> makeShipDTO(ship))
                     .collect(Collectors.toList()));
-            dto.put("history", myGame.getGamePlayers()
-                    .stream()
-                    .map(gamePlayer -> makeGPsByTurnDTO(gamePlayer, user))
+            dto.put("history", AllSalvoOfGame.stream()
+                    .map(salvo -> makeTurnDTO(salvo, user))
                     .collect(Collectors.toList()));
+//            dto.put("history", myGame.getGamePlayers()
+//                    .stream()
+//                    .map(gamePlayer -> makeGPsByTurnDTO(gamePlayer, user))
+//                    .collect(Collectors.toList()));
             return new ResponseEntity<>(makeResponseEntityMap("OK", dto), HttpStatus.CREATED);
         }else{
             dto.put("ERROR", "Your're Not the Owner");
@@ -285,45 +291,67 @@ public class CodePenguinController {
         dto.put("shipStatus",ship.getShipStatus());
         return dto;
     }
-    private Map<String, Object> makeGPsByTurnDTO(GamePlayer currentGP, Player userLogged){
-        Map<String, Object> dtoGp = new LinkedHashMap<>();
-        String currentPlayer;
-        if(currentGP.getPlayer().equals(userLogged)){
-            currentPlayer = "owner";
-        }else{
-            currentPlayer = "enemy";
+
+    private List<SingleShot> listOfSingShotsFromSalvo(Salvo salvo){
+        List<SingleShot> listOfSingShots = new ArrayList<>();
+        for (SingleShot singleShot: salvo.getSalvoLocations()
+             ) {
+            listOfSingShots.add(singleShot);
         }
+        return listOfSingShots;
+    }
+    private void updateStatus(Salvo currentSalvo, GamePlayer gamePlayer){
 
-        dtoGp.put(currentPlayer, currentGP.getSalvoes()
-                .stream()
-                .map(salvo -> makeTurnDTO(salvo, userLogged))
-                .collect(Collectors.toList()));
-
-        return dtoGp;
+        gamePlayer.getShips().forEach(ship -> {
+            ship.getShipPositions().forEach(string -> {
+                currentSalvo.getSalvoLocations().forEach(singleShot -> {
+                    if(singleShot.getLocation().equals(string)){
+                        int hitTimes = ship.getHitTimes();
+                        hitTimes ++;
+                        ship.setHitTimes(hitTimes);
+                        singleShot.setStatus(true);
+                    }
+                });
+            });
+        });
     }
     private Map<String, Object> makeTurnDTO(Salvo currentSalvo, Player userLogged){
         Map<String, Object> dtoTurn = new LinkedHashMap<>();
         GamePlayer ownerGp = null;
         GamePlayer enemyGp = null;
+
+        List<SingleShot> myShots;
+        List<SingleShot> enemyShots;
+
         for (GamePlayer gamePlayer: currentSalvo.getGamePlayer().getGame().getGamePlayers()
-             ) {
+                ) {
             if(gamePlayer.getPlayer().getUserName() == userLogged.getUserName()){
-                 ownerGp = gamePlayer;
+                ownerGp = gamePlayer;
             }else{
-                 enemyGp = gamePlayer;
+                enemyGp = gamePlayer;
             }
         }
-        dtoTurn.put("turn", currentSalvo.getTurnNumber());
-        dtoTurn.put("myShots", ownerGp.getSalvoes()
-                .stream()
-                .filter(salvo -> salvo.getTurnNumber() == currentSalvo.getTurnNumber())
-                .map(salvo -> makeShotsDTO(salvo))
-                .collect(Collectors.toList()));
-        dtoTurn.put("enemyShots", enemyGp.getSalvoes()
-                .stream()
-                .filter(salvo -> salvo.getTurnNumber() == currentSalvo.getTurnNumber())
-                .map(salvo -> makeShotsDTO(salvo))
-                .collect(Collectors.toList()));
+
+        //turnNumber
+        dtoTurn.put("turnNumber", currentSalvo.getTurnNumber());
+        //owner/enemy Turn
+        if(currentSalvo.getGamePlayer().getPlayer().equals(userLogged)){
+            updateStatus(currentSalvo, enemyGp);
+            dtoTurn.put("playerTurn", "me");
+            myShots = listOfSingShotsFromSalvo(currentSalvo);
+            dtoTurn.put("shots", myShots
+                    .stream()
+                    .map(singleShot -> makeSingleShotDTO(singleShot))
+                    .collect(Collectors.toList()));
+        }else{
+            updateStatus(currentSalvo, ownerGp);
+            dtoTurn.put("playerTurn", "enemy");
+            enemyShots = listOfSingShotsFromSalvo(currentSalvo);
+            dtoTurn.put("shots", enemyShots
+                    .stream()
+                    .map(singleShot -> makeSingleShotDTO(singleShot))
+                    .collect(Collectors.toList()));
+        }
         dtoTurn.put("myShipStatus", ownerGp.getShips()
                 .stream()
                 .map(ship -> verifyShipStatus(ship))
@@ -342,14 +370,6 @@ public class CodePenguinController {
         dtoShip.put("ShipHit", ship.getHitTimes());
         dtoShip.put("ShipStatus", ship.getShipStatus());
         return dtoShip;
-    }
-    private Map<String, Object> makeShotsDTO(Salvo salvo){
-        Map<String, Object> dtoShots = new LinkedHashMap<>();
-        dtoShots.put("shots", salvo.getSalvoLocations()
-                        .stream()
-                        .map(singleShot -> makeSingleShotDTO(singleShot))
-                        .collect(Collectors.toList()));
-        return dtoShots;
     }
 
     private Map<String, Object> makeSingleShotDTO(SingleShot singleShot){

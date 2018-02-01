@@ -68,21 +68,21 @@ public class Ship {
 
     public void setHitTimes(int hitTimes) {
         this.hitTimes = hitTimes;
-        if(type == "Carrier" && hitTimes == shipPositions.size()){
+        if(hitTimes == shipPositions.size()){
             this.shipStatus = true;
         }
-        if(type == "Battleship" && hitTimes == shipPositions.size()){
-            this.shipStatus = true;
-        }
-        if(type == "Submarine"  && hitTimes == shipPositions.size()){
-            this.shipStatus = true;
-        }
-        if(type == "Destroyer" && hitTimes == shipPositions.size()){
-            this.shipStatus = true;
-        }
-        if(type == "PatrolBoat" && hitTimes == shipPositions.size()){
-            this.shipStatus = true;
-        }
+//        if(type == "Battleship" && hitTimes == shipPositions.size()){
+//            this.shipStatus = true;
+//        }
+//        if(type == "Submarine"  && hitTimes == shipPositions.size()){
+//            this.shipStatus = true;
+//        }
+//        if(type == "Destroyer" && hitTimes == shipPositions.size()){
+//            this.shipStatus = true;
+//        }
+//        if(type == "Patrol Boat" && hitTimes == shipPositions.size()){
+//            this.shipStatus = true;
+//        }
     }
     // voids!!
     public void setGamePlayer(GamePlayer gamePlayer) {

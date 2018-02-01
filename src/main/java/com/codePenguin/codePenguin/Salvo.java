@@ -10,7 +10,7 @@ public class Salvo {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    private int turnNumber;
+    private long turnNumber;
     private int shotsPerTurn;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -25,7 +25,7 @@ public class Salvo {
         this.shotsPerTurn = 1;
     }
 
-    public Salvo(int turnNumber, GamePlayer gamePlayer, List<SingleShot> salvoLocations) {
+    public Salvo(long turnNumber, GamePlayer gamePlayer, List<SingleShot> salvoLocations) {
         this.turnNumber = turnNumber;
         this.gamePlayer = gamePlayer;
         this.salvoLocations = salvoLocations;
@@ -38,7 +38,7 @@ public class Salvo {
         return id;
     }
 
-    public int getTurnNumber() {
+    public long getTurnNumber() {
         return turnNumber;
     }
 

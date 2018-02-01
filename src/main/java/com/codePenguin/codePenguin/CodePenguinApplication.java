@@ -85,13 +85,13 @@ public class CodePenguinApplication extends SpringBootServletInitializer {
             List<String> carrier_Loc = new ArrayList<>(Arrays.asList("A7", "B7", "C7","D7","E7"));
 
             //SHIPS GAMEPLAYER 1
-            Ship patrolBoat = new Ship("PatrolBoat", patrolBoat_Loc, gamePlayer1);
+            Ship patrolBoat = new Ship("Patrol Boat", patrolBoat_Loc, gamePlayer1);
             Ship destroyer = new Ship("Destroyer", destroyer_Loc, gamePlayer1);
             Ship submarine = new Ship("Submarine", submarine_Loc, gamePlayer1);
             Ship battleship = new Ship("Battleship", battleship_Loc, gamePlayer1);
             Ship carrier = new Ship("Carrier", carrier_Loc, gamePlayer1);
             //SHIPS GAMEPLAYER 2
-            Ship patrolBoat2 = new Ship("PatrolBoat", patrolBoat_Loc, gamePlayer2);
+            Ship patrolBoat2 = new Ship("Patrol Boat", patrolBoat_Loc, gamePlayer2);
             Ship carrier2 = new Ship("Carrier", carrier_Loc, gamePlayer2);
 
 

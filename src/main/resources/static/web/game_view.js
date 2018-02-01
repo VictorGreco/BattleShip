@@ -370,7 +370,7 @@ function unauthorizedPage(){
                             'ondragover': 'allowDrop(event)',
                         });
              i == 0 ? shipClass = 'carrier' : '';  i == 1 ? shipClass = 'battleship' : ''; i == 2 ? shipClass = 'submarine' : '';
-             i == 3 ? shipClass = 'destroyer' : ''; i == 4 ? shipClass = 'petrolBoat' : '';
+             i == 3 ? shipClass = 'destroyer' : ''; i == 4 ? shipClass = 'patrolBoat' : '';
             var ship = $('<div>', {
                             'id': 'drag'+i+'',
                             'class': shipClass + ' dispHorizontal',

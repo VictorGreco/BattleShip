@@ -188,7 +188,7 @@ td:hover{
     justify-content: space-around;
     align-items: flex-start;
  }
- .carrier,.battleship, .submarine, .destroyer, .petrolBoat{
+ .carrier,.battleship, .submarine, .destroyer, .patrolBoat{
     background-color: green;
  }
  .carrier{
@@ -210,7 +210,7 @@ td:hover{
 
  }
 
- .petrolBoat{
+ .patrolBoat{
       margin-top: -20px;
       width: 94px;
       height: 46px;
