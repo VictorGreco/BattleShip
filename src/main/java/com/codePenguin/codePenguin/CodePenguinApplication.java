@@ -111,7 +111,6 @@ public class CodePenguinApplication extends SpringBootServletInitializer {
             List<SingleShot> turn3Player1SalvoPos = new ArrayList<>(Arrays.asList(shot1,shot2 , shot3));
             List<SingleShot> turn3Player2SalvoPos = new ArrayList<>(Arrays.asList(shot1,shot2 , shot3));
 
-//            int Turn = 1;
 
             //SALVOES
             Salvo turn1Player1 = new Salvo(1, gamePlayer1, turn1Player1SalvoPos);

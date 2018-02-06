@@ -1,9 +1,7 @@
 package com.codePenguin.codePenguin;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Game {
@@ -11,6 +9,10 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private Date creationDate;
+
+    @ElementCollection
+    @Column(name="chat_Messages")
+    private List<SingleMessage> allChatMessages = new ArrayList<>();
 
     @OneToMany(mappedBy="game", fetch=FetchType.EAGER)
     Set<GamePlayer> gamePlayers = new HashSet<>();
@@ -60,4 +62,13 @@ public class Game {
     public Date getDate() {
         return creationDate;
     }
+
+    public List<SingleMessage> getAllChatMessages() {
+        return allChatMessages;
+    }
+
+    public void setAllChatMessages(List<SingleMessage> allChatMessages) {
+        this.allChatMessages = allChatMessages;
+    }
+
 }
