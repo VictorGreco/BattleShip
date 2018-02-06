@@ -298,8 +298,26 @@ td:hover{
     background-position: center;
 }
 
-
-
+.endGame{
+    height:60vh;
+    width:100%;
+    border: 2px solid white;
+    margin-top: 19vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.message{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 50%;
+    width: auto;
+    color: white;
+    font-family: 'Ruslan Display', cursive;
+    font-size: 30px;
+}
 
 
 

@@ -29,6 +29,9 @@ public class CodePenguinController {
 
     @Autowired
     private SalvoRepository salvoRepository;
+
+    @Autowired
+    private ScoreRepository scoreRepository;
 //[ENDS AUTOWIRED REPOSITORIES]
 
 // 1-- [START REQUESTS MAPPINGS]
@@ -135,7 +138,7 @@ public class CodePenguinController {
         }
 
     // 1.5 -- POST method that receive an auth object, an ID from the path and a string, create a singleMessage and add it to the list of messages in the game, return HTTP response.
-    //Temporal method for the chat, in the future i'll implement websockets.
+    //Temporal method for the chat, in the future i'll implement WEBSOCKET.
     @RequestMapping(path = "/games/players/{gamePlayerId}/chat", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> postMessage(Authentication authentication,
                                                            @PathVariable long gamePlayerId,
@@ -175,6 +178,33 @@ public class CodePenguinController {
 
         playerRepository.save(new Player(username, password));
         return new ResponseEntity<>("User added", HttpStatus.CREATED);
+    }
+
+    @RequestMapping(path = "/games/players/{gamePlayerId}/score", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> postScore(Authentication authentication,
+                                                           @PathVariable long gamePlayerId,
+                                                           @RequestBody int score) {
+        if (authentication != null){
+            if(gamePlayerRepository.findOne(gamePlayerId) != null){
+                GamePlayer currentGamePlayer = gamePlayerRepository.findOne(gamePlayerId);
+                Game currentGame = currentGamePlayer.getGame();
+                if(currentGame.getScores().size() < 2 && (score == 2 || score == 0 )){
+                    Player player = currentGamePlayer.getPlayer();
+                    Score newScore = new Score(score+0, currentGame, player);
+                    currentGame.addScore(newScore);
+                    scoreRepository.save(newScore);
+//                    gameRespository.save(currentGame);
+                    return new ResponseEntity<>(makeResponseEntityMap("OK", ""), HttpStatus.CREATED);
+                }else{
+                    return new ResponseEntity<>(makeResponseEntityMap("error", "empty message"), HttpStatus.UNAUTHORIZED);
+
+                }
+            }else{
+                return new ResponseEntity<>(makeResponseEntityMap("error", "Your're Not the Owner"), HttpStatus.UNAUTHORIZED);
+            }
+        }else{
+            return new ResponseEntity<>(makeResponseEntityMap("error", "Not Logged User"), HttpStatus.UNAUTHORIZED);
+        }
     }
 
     // 1.7 -- GET method that receive an auth object and returns a JSON with the logged user, gallGames and ranking.
@@ -230,7 +260,7 @@ public class CodePenguinController {
                     .stream()
                     .map(this::makeSingleMessageDTO)
                     .collect(Collectors.toList()));
-            dto.put("gameStatus", makeGameState(myGamePlayer, user));
+            dto.put("gameStatus", makeGameStatus(myGamePlayer, user));
             return new ResponseEntity<>(makeResponseEntityMap("OK", dto), HttpStatus.CREATED);
         }else{
             dto.put("ERROR", "Your're Not the Owner");
@@ -253,9 +283,12 @@ public class CodePenguinController {
         return map;
     }
     // 2.2 -- method that receive the logged user and a gamePlayer and return the satus of an ongoing game, used to hold the turns status.
-    private String makeGameState(GamePlayer currentGamePlayer, Player user){
+    private String makeGameStatus(GamePlayer currentGamePlayer, Player user){
         GamePlayer ownerGp = null;
         GamePlayer otherGp = null;
+        int mySunkShips = 0;
+        int oppSunkShips = 0;
+        // for that filter the owner of the gamePlayer and the opponent gamePlayer.
         for (GamePlayer gamePlayer:  currentGamePlayer.getGame().getGamePlayers()
                 ) {
             if(gamePlayer.getPlayer().getUserName().equals(user.getUserName())){
@@ -264,16 +297,39 @@ public class CodePenguinController {
                 otherGp = gamePlayer;
             }
         }
+        //IF  that manage your ships are placed.
         if(ownerGp.getShips().size() < 5){
             return "w84UrShips";
         }
+        //IF  that manage if an opponent join the game.
         if(ownerGp.getGame().getGamePlayers().size() < 2){
             return "w84Opp";
-
         }
+        //IF  that manage if the opponent ship's are palced.
         if(otherGp.getShips().size() < 5){
             return "w84OppShips";
         }
+
+        for (Ship ship: ownerGp.getShips()
+             ) {
+            if(ship.getShipStatus()){
+                mySunkShips++;
+            }
+            if(mySunkShips == 5){
+                return "youLose";
+            }
+        }
+        for (Ship ship: otherGp.getShips()
+                ) {
+            if(ship.getShipStatus()){
+                oppSunkShips++;
+            }
+            if(oppSunkShips == 5){
+                return "youWin";
+            }
+        }
+
+        //IF  that manage the turns.
         if(ownerGp.getId() < otherGp.getId()){
             if(ownerGp.getSalvoes().size() == otherGp.getSalvoes().size()){
                 return "youPlay";
@@ -289,6 +345,7 @@ public class CodePenguinController {
                 return "OppPlay";
             }
         }
+
     }
     // 2.3 -- method that return a map for each player in the repository.
     private List<Map<String, Object>> getLeaderBoard(){

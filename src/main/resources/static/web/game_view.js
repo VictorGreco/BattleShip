@@ -184,7 +184,6 @@ function authorizedPage(data){
 function statusAllowed(data){
      if(data.OK.gameStatus == 'w84UrShips'){
             $('#placeShipsBtn').show();
-
         }else{
             if(data.OK.gameStatus == 'w84Opp'){
                 $('#placeShipsBtn').hide();
@@ -201,9 +200,14 @@ function statusAllowed(data){
                         getChatSystem(data.OK.history);
                         onClickSomeTd(data.OK, salvoPosition);
                     }else{
-                        $('#placeShipsBtn').hide();
-                        colorGrid(data.OK);
-                        getChatSystem(data.OK.history);
+                        if(data.OK.gameStatus == 'OppPlay'){
+                            $('#placeShipsBtn').hide();
+                            colorGrid(data.OK);
+                            getChatSystem(data.OK.history);
+                        }else{
+                            data.OK.gameStatus == 'youLose' ? endGame('youLose') : '';
+                            data.OK.gameStatus == 'youWin' ? endGame('youWin') : '';
+                        }
                     }
                 }
             }
@@ -222,6 +226,21 @@ function unauthorizedPage(){
 }
 
 //[USER INTERACTION FUNCTIONS]
+    function endGame(result){
+        var message = '';
+        result == 'youLose' ? (message = 'youLose', score = 0) : (message = 'youWin', score = 2);
+        var $message = $('<h1>').addClass('message').append(message);
+        var $div = $('<div>').addClass('endGame').append($message);
+        $('#gridInterface').html($div);
+        var gp = window.location.href.split('=')[1];
+        $.post({
+          url: "/api/games/players/"+ gp +"/score",
+          data: JSON.stringify(score),
+          dataType: "text",
+          contentType: "application/json"
+        })
+    }
+
     function onClickSomeTd(data, salvoPosition){
     var clickedCellNumber;
     var clickedTable;
@@ -239,7 +258,6 @@ function unauthorizedPage(){
              clickedTdID = this.id.split('_');
              clickedCellNumber = clickedTdID[1];
              clickedTable = clickedTdID[0];
-
             wantToFire(clickedCellNumber, clickedTable, salvoPosition);
 
         });
