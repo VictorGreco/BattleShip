@@ -56,7 +56,7 @@ public class CodePenguinController {
             if(wantedGame == null){
                 return new ResponseEntity<>(makeResponseEntityMap("error", "Doesn't Exist"), HttpStatus.FORBIDDEN);
             }else{
-                if (wantedGame.getGamePlayers().stream().count() == 1){
+                if (wantedGame.getGamePlayers().size() == 1){
                     GamePlayer newGamePlayer = new GamePlayer(wantedGame, user);
                     gamePlayerRepository.save(newGamePlayer);
                     return new ResponseEntity<>(makeResponseEntityMap("gpId", newGamePlayer.getId()), HttpStatus.CREATED);
@@ -79,8 +79,8 @@ public class CodePenguinController {
                 Player user = playerRepository.findByUserName(authentication.getName());
                 if(gamePlayer.getPlayer().getId() == user.getId()){
                     if(gamePlayer.getShips().isEmpty() && shipList.size() == 5){
-                        shipList.stream().forEach(ship -> gamePlayer.addShip(ship));
-                        shipList.stream().forEach(ship -> shipRepository.save(ship));
+                        shipList.forEach(gamePlayer::addShip);
+                        shipList.forEach(shipRepository::save);
                         return new ResponseEntity<>(makeResponseEntityMap("OK", ""), HttpStatus.CREATED);
                     }else{
                         return new ResponseEntity<>(makeResponseEntityMap("error", "You can't have more Ships"), HttpStatus.FORBIDDEN);
@@ -121,7 +121,7 @@ public class CodePenguinController {
                     SingleShot newShot = new SingleShot(shotLoc);
                     singleShotList.add(newShot);
                 }
-                long currentTurn = ownerGp.getSalvoes().stream().count() + 1;
+                long currentTurn = ownerGp.getSalvoes().size() + 1;
                 Salvo newSalvo = new Salvo(currentTurn, ownerGp, singleShotList);
                 ownerGp.addSalvo(newSalvo);
                 salvoRepository.save(newSalvo);
@@ -180,7 +180,7 @@ public class CodePenguinController {
     // 1.7 -- GET method that receive an auth object and returns a JSON with the logged user, gallGames and ranking.
     @RequestMapping("/games")
     public Map<String, Object> jsonGamesAndUser(Authentication authentication){
-        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        Map<String, Object> dto = new LinkedHashMap<>();
         if(authentication != null){
             Player user = playerRepository.findByUserName(authentication.getName());
             dto.put("user", makePlayerDTO(user));
@@ -200,35 +200,35 @@ public class CodePenguinController {
         Player user = playerRepository.findByUserName(authentication.getName());
         GamePlayer myGamePlayer = gamePlayerRepository.findOne(gamePlayerId);
         Game myGame = myGamePlayer.getGame();
-        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        Map<String, Object> dto = new LinkedHashMap<>();
 
         List<Salvo> AllSalvoOfGame = new ArrayList<>();
 
         for (GamePlayer gameplayer: myGame.getGamePlayers()
              ) {
-            for (Salvo salvo: gameplayer.getSalvoes()
-                 ) {
-                AllSalvoOfGame.add(salvo);
-            }
+//            for (Salvo salvo: gameplayer.getSalvoes()
+//                 ) {
+                AllSalvoOfGame.addAll(gameplayer.getSalvoes());
+//            }
         }
-        AllSalvoOfGame.sort(Comparator.comparing(a -> a.getTurnNumber()));
+        AllSalvoOfGame.sort(Comparator.comparing(Salvo::getTurnNumber));
         if(myGamePlayer.getPlayer().equals(user)){
             dto.put("id", myGamePlayer.getId());
             dto.put("create", myGame.getDate());
             dto.put("GamePlayers", myGame.getGamePlayers()
                     .stream()
-                    .map(gamePlayer -> makeGamePlayDTO(gamePlayer))
+                    .map(this::makeGamePlayDTO)
                     .collect(Collectors.toList()));
             dto.put("Ships", myGamePlayer.getShips()
                     .stream()
-                    .map( ship-> makeShipDTO(ship))
+                    .map(this::makeShipDTO)
                     .collect(Collectors.toList()));
             dto.put("history", AllSalvoOfGame.stream()
                     .map(salvo -> makeTurnDTO(salvo, user))
                     .collect(Collectors.toList()));
             dto.put("chat", myGame.getAllChatMessages()
                     .stream()
-                    .map(SingleMessage -> makeSingleMessageDTO(SingleMessage))
+                    .map(this::makeSingleMessageDTO)
                     .collect(Collectors.toList()));
             dto.put("gameStatus", makeGameState(myGamePlayer, user));
             return new ResponseEntity<>(makeResponseEntityMap("OK", dto), HttpStatus.CREATED);
@@ -241,11 +241,10 @@ public class CodePenguinController {
 
 // 2 -- [START GENERAL FUNCTIONS]
     private long getResult(Set<Score> scoreSet, int filter){
-        long result = scoreSet
+        return scoreSet
                 .stream()
                 .filter(score -> score.getScore() == filter)
                 .count();
-        return result;
     }
     // 2.1 -- receive a string and an object and make a map for the response entity.
     private Map<String, Object> makeResponseEntityMap(String key, Object value) {
@@ -254,8 +253,7 @@ public class CodePenguinController {
         return map;
     }
     // 2.2 -- method that receive the logged user and a gamePlayer and return the satus of an ongoing game, used to hold the turns status.
-    public String makeGameState(GamePlayer currentGamePlayer, Player user){
-        String gameStatus;
+    private String makeGameState(GamePlayer currentGamePlayer, Player user){
         GamePlayer ownerGp = null;
         GamePlayer otherGp = null;
         for (GamePlayer gamePlayer:  currentGamePlayer.getGame().getGamePlayers()
@@ -267,28 +265,28 @@ public class CodePenguinController {
             }
         }
         if(ownerGp.getShips().size() < 5){
-            return gameStatus = "w84UrShips";
+            return "w84UrShips";
         }
         if(ownerGp.getGame().getGamePlayers().size() < 2){
-            return gameStatus = "w84Opp";
+            return "w84Opp";
 
         }
         if(otherGp.getShips().size() < 5){
-            return gameStatus = "w84OppShips";
+            return "w84OppShips";
         }
         if(ownerGp.getId() < otherGp.getId()){
             if(ownerGp.getSalvoes().size() == otherGp.getSalvoes().size()){
-                return gameStatus = "youPlay";
+                return "youPlay";
 
             }else{
-                return gameStatus = "OppPlay";
+                return "OppPlay";
             }
         }else{
             if(ownerGp.getSalvoes().size() != otherGp.getSalvoes().size()){
-                return gameStatus = "youPlay";
+                return "youPlay";
 
             }else{
-                return gameStatus = "OppPlay";
+                return "OppPlay";
             }
         }
     }
@@ -297,12 +295,12 @@ public class CodePenguinController {
         return playerRepository
                 .findAll()
                 .stream()
-                .map(player -> makePlayerScoreDTO(player))
+                .map(this::makePlayerScoreDTO)
                 .collect(Collectors.toList());
     }
     // 2.4 -- method that return a map for each player in the repository.
     private Map<String, Object> makeSingleMessageDTO(SingleMessage currentMessage){
-        Map<String, Object> dtoChat = new LinkedHashMap<String, Object>();
+        Map<String, Object> dtoChat = new LinkedHashMap<>();
 
         dtoChat.put("writer", currentMessage.getWriterId());
         dtoChat.put("message", currentMessage.getMessageBody());
@@ -314,12 +312,12 @@ public class CodePenguinController {
         return gameRespository
                 .findAll()
                 .stream()
-                .map(game -> makeGameDTO(game))
+                .map(this::makeGameDTO)
                 .collect(Collectors.toList());
     }
     // 2.6 -- method that receive a player and return a map of that playerScores.
     private Map<String, Object> makePlayerScoreDTO(Player currentPlayer){
-        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("pId", currentPlayer.getId());
         dto.put("name", currentPlayer.getUserName());
         dto.put("WinGames", getResult(currentPlayer.getScores(), 2));
@@ -330,36 +328,36 @@ public class CodePenguinController {
     }
     // 2.7 -- method that receive a game and return a map of that game.
     private Map<String, Object> makeGameDTO(Game game) {
-        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("gameId", game.getId());
         dto.put("create", game.getDate());
         dto.put("GamePlayers", game.getGamePlayers()
                 .stream()
-                .map(gamePlayer -> makeGamePlayDTO(gamePlayer))
+                .map(this::makeGamePlayDTO)
                 .collect(Collectors.toList()));
         dto.put("Scores", game.getScores()
                 .stream()
-                .map(score -> makeScoreDTO(score))
+                .map(this::makeScoreDTO)
                 .collect(Collectors.toList()));
         return dto;
     }
     // 2.8 -- method that receive a gamePlayer and return a map of that gamePlayer.
     private Map<String, Object> makeGamePlayDTO(GamePlayer gamePlayer) {
-        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("gpId", gamePlayer.getId());
         dto.put("Player", makePlayerDTO(gamePlayer.getPlayer()));
         return dto;
     }
     // 2.9 -- method that receive a player and return a map of that player.
     private Map<String, Object> makePlayerDTO(Player player){
-        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("pId", player.getId());
         dto.put("name", player.getUserName());
         return dto;
     }
     // 2.10 -- method that receive a score and return a map of that score.
     private Map<String, Object> makeScoreDTO(Score score){
-        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("pId", score.getPlayer().getId());
         dto.put("name", score.getPlayer().getUserName());
         dto.put("Points", score.getScore());
@@ -367,7 +365,7 @@ public class CodePenguinController {
     }
     // 2.11 -- method that receive a ship and return a map of that ship.
     private Map<String, Object> makeShipDTO(Ship ship) {
-        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("type", ship.getType());
         dto.put("location", ship.getShipPositions());
         dto.put("shipHits",ship.getHitTimes());
@@ -377,26 +375,19 @@ public class CodePenguinController {
     // 2.12 -- method that receive a salvo and return a map of that salvo.
     private List<SingleShot> listOfSingShotsFromSalvo(Salvo salvo){
         List<SingleShot> listOfSingShots = new ArrayList<>();
-        for (SingleShot singleShot: salvo.getSalvoLocations()
-             ) {
-            listOfSingShots.add(singleShot);
-        }
+        listOfSingShots.addAll(salvo.getSalvoLocations());
         return listOfSingShots;
     }
     // 2.13 -- method that receive a salvo and a gamePlayer and update the status of that gamePlayer.
     private void updateStatus(Salvo currentSalvo, GamePlayer gamePlayer){
-        gamePlayer.getShips().forEach(ship -> {
-            ship.getShipPositions().forEach(string -> {
-                currentSalvo.getSalvoLocations().forEach(singleShot -> {
-                    if(singleShot.getLocation().equals(string)){
-                        int hitTimes = ship.getHitTimes();
-                        hitTimes ++;
-                        ship.setHitTimes(hitTimes);
-                        singleShot.setStatus(true);
-                    }
-                });
-            });
-        });
+        gamePlayer.getShips().forEach(ship -> ship.getShipPositions().forEach(string -> currentSalvo.getSalvoLocations().forEach(singleShot -> {
+            if(singleShot.getLocation().equals(string)){
+                int hitTimes = ship.getHitTimes();
+                hitTimes ++;
+                ship.setHitTimes(hitTimes);
+                singleShot.setStatus(true);
+            }
+        })));
     }
     // 2.14 -- method that receive a salvo and the logged user and return a map of the player turns.
     private Map<String, Object> makeTurnDTO(Salvo currentSalvo, Player userLogged){
@@ -407,7 +398,7 @@ public class CodePenguinController {
         List<SingleShot> enemyShots;
         for (GamePlayer gamePlayer: currentSalvo.getGamePlayer().getGame().getGamePlayers()
                 ) {
-            if(gamePlayer.getPlayer().getUserName() == userLogged.getUserName()){
+            if(gamePlayer.getPlayer().getUserName().equals(userLogged.getUserName())){
                 ownerGp = gamePlayer;
             }else{
                 enemyGp = gamePlayer;
@@ -420,7 +411,7 @@ public class CodePenguinController {
             myShots = listOfSingShotsFromSalvo(currentSalvo);
             dtoTurn.put("shots", myShots
                     .stream()
-                    .map(singleShot -> makeSingleShotDTO(singleShot))
+                    .map(this::makeSingleShotDTO)
                     .collect(Collectors.toList()));
         }else{
             updateStatus(currentSalvo, ownerGp);
@@ -428,16 +419,16 @@ public class CodePenguinController {
             enemyShots = listOfSingShotsFromSalvo(currentSalvo);
             dtoTurn.put("shots", enemyShots
                     .stream()
-                    .map(singleShot -> makeSingleShotDTO(singleShot))
+                    .map(this::makeSingleShotDTO)
                     .collect(Collectors.toList()));
         }
         dtoTurn.put("myShipStatus", ownerGp.getShips()
                 .stream()
-                .map(ship -> verifyShipStatus(ship))
+                .map(this::verifyShipStatus)
                 .collect(Collectors.toList()));
         dtoTurn.put("enemyShipStatus", enemyGp.getShips()
                 .stream()
-                .map(ship -> verifyShipStatus(ship))
+                .map(this::verifyShipStatus)
                 .collect(Collectors.toList()));
 
         return dtoTurn;

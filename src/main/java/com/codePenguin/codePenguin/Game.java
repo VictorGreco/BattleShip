@@ -15,9 +15,11 @@ public class Game {
     private List<SingleMessage> allChatMessages = new ArrayList<>();
 
     @OneToMany(mappedBy="game", fetch=FetchType.EAGER)
+    private
     Set<GamePlayer> gamePlayers = new HashSet<>();
 
     @OneToMany(mappedBy="game", fetch=FetchType.EAGER)
+    private
     Set<Score> scores = new HashSet<>();
 
 
@@ -28,18 +30,16 @@ public class Game {
     }
 
     // voids!!
-    public void addGamePlay(GamePlayer gamePlayer) {
-//        gamePlayer.setGame(this);
+    void addGamePlay(GamePlayer gamePlayer) {
         gamePlayers.add(gamePlayer);
     }
 
-    public void addScore(Score score) {
-//        score.setGame(this);
+    void addScore(Score score) {
         scores.add(score);
     }
 
     //      getter && setter methods
-    public Set<GamePlayer> getGamePlayers() {
+    Set<GamePlayer> getGamePlayers() {
         return gamePlayers;
     }
 
@@ -47,7 +47,7 @@ public class Game {
         this.gamePlayers = gamePlayers;
     }
 
-    public Set<Score> getScores() {
+    Set<Score> getScores() {
         return scores;
     }
 
@@ -59,11 +59,11 @@ public class Game {
         return id;
     }
 
-    public Date getDate() {
+    Date getDate() {
         return creationDate;
     }
 
-    public List<SingleMessage> getAllChatMessages() {
+    List<SingleMessage> getAllChatMessages() {
         return allChatMessages;
     }
 

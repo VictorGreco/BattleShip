@@ -25,7 +25,7 @@ public class Salvo {
         this.shotsPerTurn = 1;
     }
 
-    public Salvo(long turnNumber, GamePlayer gamePlayer, List<SingleShot> salvoLocations) {
+    Salvo(long turnNumber, GamePlayer gamePlayer, List<SingleShot> salvoLocations) {
         this.turnNumber = turnNumber;
         this.gamePlayer = gamePlayer;
         this.salvoLocations = salvoLocations;
@@ -38,15 +38,15 @@ public class Salvo {
         return id;
     }
 
-    public long getTurnNumber() {
+    long getTurnNumber() {
         return turnNumber;
     }
 
-    public List<SingleShot> getSalvoLocations() {
+    List<SingleShot> getSalvoLocations() {
         return salvoLocations;
     }
 
-    public GamePlayer getGamePlayer() {
+    GamePlayer getGamePlayer() {
         return gamePlayer;
     }
 
