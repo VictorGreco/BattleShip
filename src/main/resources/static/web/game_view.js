@@ -161,31 +161,41 @@ $(function(){
 
 //[START CALLS]
     var salvoPosition = [];
-    var dataX;
+    var myData;
     $.getJSON(url, function(data){
     })
     .done(function(data){
-        dataX = data;
         authorizedPage(data);
-        myPlay('warAudio', true)
+        myPlay('warAudio', true);
+        myData = data;
+        $('td').click(function(clickData){
+            console.log(clickData);
+            var targetId = clickData.currentTarget.id;
+            var clickedCellNumber = targetId.split('_')[1];
+            var clickedTable = targetId.split('_')[0];
+            if(myData.OK.gameStatus == 'youPlay'){
+                wantToFire(clickedCellNumber, clickedTable, salvoPosition);
+            }
+        });
     })
     .fail(function(){
         unauthorizedPage();
     });
 
-   // setInterval(function(dataX){
-   //      console.log("hi!");
-   //      $.getJSON(url, function(data){
-   //      })
-   //          .done(function(data){
-   //              var dataY = data;
-   //              dataX != dataY ? statusAllowed(data) : '';
-   //              dataX = dataY;
-   //          })
-   //          .fail(function(){
-   //              unauthorizedPage();
-   //          });
-   //  }, 1000)
+   setInterval(function(){
+        console.log("hi!");
+        $.getJSON(url, function(data){
+        })
+        .done(function(data){
+            statusAllowed(data);
+            myData = data;
+        })
+        .fail(function(){
+            unauthorizedPage();
+        });
+    }, 1000)
+
+
 //[END CALLS]
 
 function authorizedPage(data){
@@ -196,6 +206,17 @@ function authorizedPage(data){
     getPlayersInfo(data.OK);
     statusAllowed(data);
     getHangar();
+}
+function unauthorizedPage(){
+    var row = $('<section>', {'class': 'row'});
+    var col = $('<article>',{'class': 'col-lg-12'});
+    var messageBox = $('<div>',{'id': 'errorMessage'});
+    var message = 'Cheat is not allowed';
+
+    messageBox.append(message);
+    col.append(messageBox);
+    row.append(col);
+    $('#main').html(row);
 }
 function statusAllowed(data){
      if(data.OK.gameStatus == 'w84UrShips'){
@@ -214,7 +235,7 @@ function statusAllowed(data){
                         $('#placeShipsBtn').hide();
                         colorGrid(data.OK);
                         getChatSystem(data.OK.history);
-                        onClickSomeTd(data.OK, salvoPosition);
+                        // allowCLick(data.OK, salvoPosition);
                     }else{
                         if(data.OK.gameStatus == 'OppPlay'){
                             $('#placeShipsBtn').hide();
@@ -229,17 +250,7 @@ function statusAllowed(data){
             }
         }
 }
-function unauthorizedPage(){
-    var row = $('<section>', {'class': 'row'});
-    var col = $('<article>',{'class': 'col-lg-12'});
-    var messageBox = $('<div>',{'id': 'errorMessage'});
-    var message = 'Cheat is not allowed';
 
-    messageBox.append(message);
-    col.append(messageBox);
-    row.append(col);
-    $('#main').html(row);
-}
 
 //[USER INTERACTION FUNCTIONS]
     function endGame(result){
@@ -255,28 +266,6 @@ function unauthorizedPage(){
           dataType: "text",
           contentType: "application/json"
         })
-    }
-
-    function onClickSomeTd(data, salvoPosition){
-    var clickedCellNumber;
-    var clickedTable;
-    var clickedTdID;
-        $('td').click(function(){
-        var salvoes;
-        $(data.playerTurns).each(function(){
-            this.gamePlayerId === data.id ? salvoes = this.turns : '';
-        });
-        var lastTurn = 0;
-        $(salvoes).each(function(){
-            this.Turn > lastTurn ? lastTurn = this.Turn : '';
-        });
-        var currenTurn = lastTurn + 1;
-             clickedTdID = this.id.split('_');
-             clickedCellNumber = clickedTdID[1];
-             clickedTable = clickedTdID[0];
-            wantToFire(clickedCellNumber, clickedTable, salvoPosition);
-
-        });
     }
 function wantToFire(CellNumber, clickedTable, salvoPosition){
     var cellId = clickedTable+"_"+CellNumber;
@@ -317,7 +306,11 @@ function postSalvoes(salvoPosition){
              dataType: "text",
              contentType: "application/json"
            }).done(function(){
-                $('#notMySalvoGrid_'+salvoPosition).addClass('fired');
+                $(salvoPosition).each(function(){
+                    $('#notMySalvoGrid_'+this).addClass('fired');
+                    $('#notMySalvoGrid_'+this).removeClass('futureFire');
+                });
+                salvoPosition = [];
            })
     }
 }
