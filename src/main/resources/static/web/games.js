@@ -1,40 +1,78 @@
 
 //[START WORKING CODE CALLS]
 $(function () {
-
 //    var url = "http://localhost:8080/api/games";
     $.getJSON("http://localhost:8080/api/games", function (data) {
-    console.log(data);
-    console.log("JSON LOADED");
-    //functions that loads ever!
-    createGamesList (data.games, data.user);
-    getRankingsTable(data.leader_board);
-    myDataTable();
 
-    // function that loads only if the user is authorized or not!
-    if(data.user === "null"){
-        unauthorized();
-    }else{
-        getWelcome(data.user);
-       $('#newGame').show();
-        $('#newGame').click(newGame);
-        $('#logout').click(logout);
-    }
+    }).done(function(data){
+        console.log(data);
+
+        //functions that loads ever!
+        createGamesList (data.games, data.user);
+        getRankingsTable(data.leader_board);
+        myDataTable();
+
+        // function that loads only if the user is authorized or not!
+        if(data.user === "null"){
+            unauthorized(data);
+        }else{
+            authorized(data);
+        }
     });
 });
 //[ENDS WORKING CODE CALLS]
 
 //[START FUNCTION DESCRIPTIONS]
 
+function mutate(audioId){
+    var x = document.getElementById(audioId);
+    x.pause();
+    if(audioId == 'logoutAudio'){
+        $('#mutate').hide();
+        $('#speaker').show();
+    }else{
+        $('#mutate2').hide();
+        $('#speaker2').show();
+    }
+
+}
+
+function myPlay(audioId, loop){
+    var x = document.getElementById(audioId);
+    x.loop = loop;
+    x.play();
+    if(audioId == 'logoutAudio'){
+        $('#speaker').hide();
+        $('#mutate').show();
+    }else{
+        $('#speaker2').hide();
+        $('#mutate2').show();
+    }
+}
 function unauthorized(data){
-   $('#sign-in').click(function(){
+    $('#logout, #newGame, #toggleRankings, #options2').hide();
+    $('#options').show();
+    $('#sign-in').click(function(){
        $('#btn-login').hide();
        $('#btn-signin').show().click(signIn);
        });
-   $('#login').click(function(){
+    $('#login').click(function(){
        $('#btn-signin').hide();
        $('#btn-login').show().click(login);
        });
+    myPlay('logoutAudio', true);
+}
+
+function authorized(data){
+    $('#shadowTitle, #sign-in, #login, #visitor, #versionMessage, #options').hide();
+    $('#options2').show();
+    $('#options').css({'margin-top':'2vh'});
+    $('body').css({'background-image':'url(resources/login_background4.jpg)'});
+    $('#gamesListContainer').show();
+    $('#toggleRankings').click(function(){
+        $('#rankingTable').toggle();
+    })
+    myPlay('loginAudio', true);
 }
 function newGame(){
     $.post({url: '/api/games'})
@@ -111,16 +149,6 @@ function logout(){
     window.location.reload();
 
 
-}
-function getWelcome(data){
-    if(data.name != null){
-        $('body').css({'background-image':'url(resources/login_background4.jpg)'});
-        $('#sign-in').hide();
-        $('#login').hide();
-        $('#userActions')
-        .append($('<li>',{"id": "userWelcome"}).append($('<a>').append("Welcome: " + data.name)))
-        .append($('<li>').append($('<a>',{"id":"logout"}).append("Logout").append($('<span>',{"class": "glyphicon glyphicon-log-out"}))));
-    }
 }
 
 function createGamesList (dataGames, loggedUser) {

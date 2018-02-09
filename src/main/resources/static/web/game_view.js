@@ -42,7 +42,7 @@ function drop(ev, finalPositions) {
         if($('#'+shipId+'').hasClass('dispHorizontal')){
             idNumber.length == 3 ? idNumber = idNumber[1]+idNumber[2] : idNumber = idNumber[1];
             if(1<=idNumber && idNumber <=(10-shipLength)+1){
-                for (let i = 0; i < shipLength; i++){
+                for (var i = 0; i < shipLength; i++){
                     var number = +cellNum + i;
                     var position = cellLetter + number;
                     setOfPositions.indexOf(position) == -1 ? setOfPositions.push(position) : '';
@@ -76,7 +76,7 @@ function drop(ev, finalPositions) {
             });
             var posOfLetterInArray = letterArray.indexOf(cellLetter);
             if( posOfLetterInArray != -1 && holder){
-                for(let i = 0; i < shipLength; i++ ){
+                for(var i = 0; i < shipLength; i++ ){
                     var cellLetter = letterArray[posOfLetterInArray+i];
                     var position = cellLetter + cellNum;
                     setOfPositions.indexOf(position) == -1 ? setOfPositions.push(position) : '';
@@ -130,6 +130,21 @@ function drop(ev, finalPositions) {
                 })
             }
         });
+       function mutate(audioId){
+           var x = document.getElementById(audioId);
+           x.pause();
+           $('#mutate').hide();
+           $('#speaker').show();
+       }
+
+       function myPlay(audioId, loop){
+           var x = document.getElementById(audioId);
+           x.loop = loop;
+           x.play();
+           $('#speaker').hide();
+           $('#mutate').show();
+
+       }
 //end of drag and drop features
 $(function(){
     var url = "";
@@ -152,24 +167,25 @@ $(function(){
     .done(function(data){
         dataX = data;
         authorizedPage(data);
+        myPlay('warAudio', true)
     })
     .fail(function(){
         unauthorizedPage();
     });
 
-//    setInterval(function(dataX){
-//     console.log("hi!");
-//      $.getJSON(url, function(data){
-//      })
-//      .done(function(data){
-//       var dataY = data;
-//        dataX != dataY ? statusAllowed(data) : '';
-//        dataX = dataY;
-//      })
-//      .fail(function(){
-//          unauthorizedPage();
-//      });
-//     }, 1000)
+   // setInterval(function(dataX){
+   //      console.log("hi!");
+   //      $.getJSON(url, function(data){
+   //      })
+   //          .done(function(data){
+   //              var dataY = data;
+   //              dataX != dataY ? statusAllowed(data) : '';
+   //              dataX = dataY;
+   //          })
+   //          .fail(function(){
+   //              unauthorizedPage();
+   //          });
+   //  }, 1000)
 //[END CALLS]
 
 function authorizedPage(data){
@@ -278,7 +294,7 @@ function wantToFire(CellNumber, clickedTable, salvoPosition){
     }else{
         $(salvoPosition).each(function(){
             $('#'+clickedTable+'_'+this).removeClass('futureFire');
-            let expulse = salvoPosition.indexOf(this);
+            var expulse = salvoPosition.indexOf(this);
             salvoPosition.splice(expulse);
         });
     }
@@ -338,7 +354,7 @@ function appendTd_Tr(current, tableId){
         var cellClass = 'cell';
     }
         x.append($('<td>').append(current));
-        for (let i = 1; i <= 10; i++){
+        for (var i = 1; i <= 10; i++){
             i= ""+i +"";
             x.append($('<td>',{
             "id": tableId+"_"+current+ i,
@@ -354,7 +370,7 @@ function appendTd_Tr(current, tableId){
 
 function appendTd_Tr_Tbody(){
     var x = $('<td>');
-    for (let i = 0; i<10; i++){
+    for (var i = 0; i<10; i++){
         x.append('1');
         }
     return x;
@@ -386,7 +402,7 @@ function colorMyShipsLocation(data){
         var shipLocation = this["location"];
         var prePosNumber= 0;
         var verificationHolder = "";
-        for(let i = 0; i< shipLocation.length; i++){
+        for(var i = 0; i< shipLocation.length; i++){
             i == 0 ? $('#myShipGrid_'+shipLocation[i]).addClass('shipProa'): "";
             i == shipLocation.length - 1 ? $('#myShipGrid_'+shipLocation[i]).addClass('shipPopa') : "";
             i != shipLocation.length - 1 && i != 0 ? $('#myShipGrid_'+shipLocation[i]).addClass('shipMiddle') : "";
@@ -439,7 +455,7 @@ function getHangar(){
                             if($('#'+targetId+'').hasClass('dispHorizontal') && holder){
                                 var posOfLetterInArray = letterArray.indexOf(shipParentIdLetter);
 
-                                for(let i = 0; i < shipLength; i++ ){
+                                for(var i = 0; i < shipLength; i++ ){
                                     var cellLetter = letterArray[posOfLetterInArray+i];
                                     var position = cellLetter + shipParentIdNum;
                                     setOfPositions.indexOf(position) == -1 ? setOfPositions.push(position) : '';
@@ -472,7 +488,7 @@ function getHangar(){
 
                             }else{
                                 if(1<=shipParentIdNum && shipParentIdNum <=(10-shipLength)+1 && holder){
-                                    for (let i = 0; i < shipLength; i++){
+                                    for (var i = 0; i < shipLength; i++){
                                         var number = +shipParentIdNum + i;
 
                                         var position = shipParentIdLetter + number;
@@ -514,9 +530,9 @@ function getChatSystem(data){
 var x = 0;
 $('#systemMessage').html('');
 $(data).each(function(){
-    let systemMessage;
-    let player;
-    let hits = '';
+    var systemMessage;
+    var player;
+    var hits = '';
 //    let shipStatusMessage = 'Sunk Ships:';
     if(this.playerTurn == 'me'){
         player= 'you';
@@ -544,19 +560,19 @@ $(data).each(function(){
     $('#systemMessage').append($('<p>', {'class':'systemMessage'}).append(systemMessage));
 });
 //    console.log(x);
-    let divHeight = $('#systemMessage').css('height').split('p')[0];
+    var divHeight = $('#systemMessage').css('height').split('p')[0];
     $('#systemMessage').scrollTop(divHeight+1);
 }
 function getPlayersInfo(data){
    $(data.GamePlayers).each(function(){
            if(data.id === this.id){
-               let ownerPlayer = this.Player["name"] + "(you)";
+               var ownerPlayer = this.Player["name"] + "(you)";
                $('#displayPlayers').append($('<div>', {
                                                 "id": "ownerPlayer",
                                                 "class": "ownerPlayer",
                                                 }).append(ownerPlayer));
            }else{
-               let otherPlayer = this.Player["name"];
+               var otherPlayer = this.Player["name"];
                $('#displayPlayers').append($('<div>',{
                                                 "id": "notOwnerPlayer",
                                                 "class": "notOwnerPlayer",

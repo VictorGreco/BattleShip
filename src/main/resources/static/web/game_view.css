@@ -195,7 +195,7 @@ td:hover{
  }
  .modal-body{
     display:flex;
-    flex-direction-row;
+    flex-direction:row;
     justify-content: space-around;
     align-items: flex-start;
  }
@@ -318,7 +318,10 @@ td:hover{
     font-family: 'Ruslan Display', cursive;
     font-size: 30px;
 }
-
+#speaker, #mutate, #speaker2, #mutate2{
+    height: auto;
+    width: 20%;
+}
 
 
 

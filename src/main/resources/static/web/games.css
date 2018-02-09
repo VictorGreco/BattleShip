@@ -1,8 +1,13 @@
+@font-face {
+    font-family: myFirstFont;
+    src: url('resources/fonts/GalaxyVisitors-Regular.otf');
+}
+
+
 body{
-    background-image: url('resources/games_background3.png');
     background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
+    background: url('resources/games_background3.png') no-repeat fixed;
+    height: 100vh;
 }
 
 a{
@@ -52,7 +57,7 @@ a{
     display:flex;
     flex-direction: row;
     justify-content: space-between;
-    align-item:center;
+    align-items:center;
     background-color: rgba(255,255,255,0.5);
 }
 
@@ -62,7 +67,7 @@ a{
     font-weight: bold;
     display: flex;
     justify-content: center;
-    align-item: center;
+    align-items: center;
 }
 
 table.dataTable tbody tr, table.dataTable thead th{
@@ -82,13 +87,97 @@ table.dataTable, table.dataTable.no-footer{
     margin-top: 5vh;
 }
 #myModal{
-    background-image: url('resources/login_background3.jpg');
     background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
+    background: url('resources/login_background3.jpg') no-repeat fixed;
 }
 .modal-content{
     background-image: url('resources/login_modal_background.png');
     background-size:contain;
     margin-top: 15vh;
 }
+.mainTitle{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: transparent;
+    font-family: myFirstFont, fantasy;
+    font-size: 100px;
+    text-shadow: 0 300px 10px rgba(0,0,0,0.7);
+}
+.mainTitle2{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-family: myFirstFont, fantasy;
+    font-size: 50px;
+}
+
+
+.titleAnimation{
+    opacity: 0;
+    animation-name: titleAnimation;
+    animation-duration: 4s;
+    animation-iteration-count: 1;
+    animation-delay: 2s;
+    animation-fill-mode: forwards;
+}
+
+.shadowAnimation{
+    opacity: 0;
+    animation-name: titleAnimation;
+    animation-duration: 4s;
+    animation-iteration-count: 1;
+    animation-delay: 6s;
+    animation-fill-mode: forwards;
+}
+
+.animation{
+    opacity: 0;
+    animation-name: titleAnimation;
+    animation-duration: 3s;
+    animation-iteration-count: 1;
+    animation-delay: 12s;
+    animation-fill-mode: forwards;
+}
+
+.flex-center{
+    height: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: 2px solid white;
+    border-bottom: 2px solid white;
+    animation-name: loginMenuAnimation;
+    animation-duration: 5s;
+    animation-delay: 8s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+#versionMessage{
+    margin-top: 5vh;
+}
+.flex-center2{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#options{
+    margin-top: 20vh;
+}
+#speaker, #mutate, #speaker2, #mutate2{
+    height: auto;
+    width: 5%;
+}
+
+@keyframes titleAnimation {
+    0% {opacity: 0;}
+    100% {opacity: 1;}
+}
+@keyframes loginMenuAnimation {
+    0% {height: 0;}
+    100% {height: 70px;}
+}
+

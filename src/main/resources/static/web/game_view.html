@@ -16,6 +16,9 @@
 
 </head>
 <body>
+    <audio id="warAudio">
+        <source src="resources/audio/war.mp3" type="audio/mp3">
+    </audio>
     <main class="container" id="main">
         <section class="row">
             <article class="col-lg-6" id="gridInterface">
@@ -44,6 +47,14 @@
                 <div id="menu">
                     <a class="btn btn-danger" id="placeShipsBtn" data-toggle="modal" href="#myModal" style="display: none;">Place Ships</a>
                     <a class="btn btn-danger" id="exitGame" href="http://localhost:8080/web/games.html">Exit Game</a>
+
+                    <img src="resources/svgIcons/speaker.svg" style="display: none;" alt="speaker" id="speaker" onclick="myPlay('warAudio', true)">
+                    <img src="resources/svgIcons/mute.svg" alt="mutate" id="mutate" onclick="mutate('warAudio')">
+
+
+
+
+
                 </div>
             </article>
         </section>
