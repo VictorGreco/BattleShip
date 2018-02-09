@@ -169,7 +169,6 @@ $(function(){
         myPlay('warAudio', true);
         myData = data;
         $('td').click(function(clickData){
-            console.log(clickData);
             var targetId = clickData.currentTarget.id;
             var clickedCellNumber = targetId.split('_')[1];
             var clickedTable = targetId.split('_')[0];
@@ -182,8 +181,21 @@ $(function(){
         unauthorizedPage();
     });
 
+    $('body').keypress(function(ev){
+        if(ev.originalEvent.which == 13 && $('#inputChat').val()){
+            var gp = window.location.href.split('=')[1];
+            $.post({
+                url: "/api/games/players/"+ gp +"/chat",
+                data: JSON.stringify($('#inputChat').val()),
+                dataType: "text",
+                contentType: "application/json"
+            }).done(function(){
+                $('#inputChat').val("");
+            })
+        }
+    });
+
    setInterval(function(){
-        console.log("hi!");
         $.getJSON(url, function(data){
         })
         .done(function(data){
@@ -193,7 +205,7 @@ $(function(){
         .fail(function(){
             unauthorizedPage();
         });
-    }, 1000)
+    }, 2000)
 
 
 //[END CALLS]
@@ -202,7 +214,6 @@ function authorizedPage(data){
     getGrid("myShipGrid");
     getGrid("notMySalvoGrid");
     getGrid("modalShipsGrid");
-    console.log(data);
     getPlayersInfo(data.OK);
     statusAllowed(data);
     getHangar();
@@ -235,12 +246,13 @@ function statusAllowed(data){
                         $('#placeShipsBtn').hide();
                         colorGrid(data.OK);
                         getChatSystem(data.OK.history);
-                        // allowCLick(data.OK, salvoPosition);
+                        getChatUsers(data.OK);
                     }else{
                         if(data.OK.gameStatus == 'OppPlay'){
                             $('#placeShipsBtn').hide();
                             colorGrid(data.OK);
                             getChatSystem(data.OK.history);
+                            getChatUsers(data.OK);
                         }else{
                             data.OK.gameStatus == 'youLose' ? endGame('youLose') : '';
                             data.OK.gameStatus == 'youWin' ? endGame('youWin') : '';
@@ -290,7 +302,16 @@ function wantToFire(CellNumber, clickedTable, salvoPosition){
 
 };
 //[FUNCTIONS]
+function getChatUsers(data){
+    $('#playerMessage').html('');
+    var textClass;
 
+    $(data.chat).each(function(){
+        $('#playerMessage').append($('<p>', {'text':this.message,
+                                              'class': textClass}));
+    });
+
+}
 function postSalvoes(salvoPosition){
     var allow = false;
     var fireLocations = "";
@@ -552,7 +573,6 @@ $(data).each(function(){
 
     $('#systemMessage').append($('<p>', {'class':'systemMessage'}).append(systemMessage));
 });
-//    console.log(x);
     var divHeight = $('#systemMessage').css('height').split('p')[0];
     $('#systemMessage').scrollTop(divHeight+1);
 }

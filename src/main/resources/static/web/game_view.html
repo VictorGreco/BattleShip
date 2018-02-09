@@ -17,7 +17,7 @@
 </head>
 <body>
     <audio id="warAudio">
-        <source src="resources/audio/war.mp3" type="audio/mp3">
+        <source src="resources/audio/warAudio.wav" type="audio/wav">
     </audio>
     <main class="container" id="main">
         <section class="row">
@@ -32,10 +32,12 @@
                 <div id="chat">
                     <div class="chat" id="chatPlayers">
                         <div class="chatTitles">chat</div>
-                        <div class="chatZone">
+                        <div class="chatZone" id="playerMessage">
 
                         </div>
+                        <input type="text" id="inputChat" placeholder="...press ENTER to send..." class="inputChat">
                     </div>
+
                     <div class="chat" id="chatSystem">
                         <div class="chatTitles">log</div>
                         <div class="chatZone" id="systemMessage">
@@ -50,11 +52,6 @@
 
                     <img src="resources/svgIcons/speaker.svg" style="display: none;" alt="speaker" id="speaker" onclick="myPlay('warAudio', true)">
                     <img src="resources/svgIcons/mute.svg" alt="mutate" id="mutate" onclick="mutate('warAudio')">
-
-
-
-
-
                 </div>
             </article>
         </section>
@@ -72,15 +69,12 @@
                     <aside id="hangar"></aside>
                 </div>
                 <div class="modal-footer" ondragover = allowDrop(event) ondrop = drop(event)>
-                    <button class="btn-lg btn-success" id="ships-confirm" ondragover = allowDrop(event) ondrop = drop(event)>Confirm</button>
+                    <button class="btn-lg btn-success" id="ships-confirm" data-dismiss="modal" ondragover = allowDrop(event) ondrop = drop(event)>Confirm</button>
                     <button class="btn-lg btn-danger " id="ships-cancel" data-dismiss="modal" ondragover = allowDrop(event) ondrop = drop(event)>&times;</button>
                 </div>
             </div>
         </div>
     </section>
-
-    <audio id="audio" src="resources/audio/NFF-no-go.wav" ></audio>
-    <!--<audio id="audio2" src="resources/audio/ambientalMusic.mp3" ></audio>-->
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>

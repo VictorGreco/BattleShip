@@ -1,12 +1,29 @@
 
 //[START WORKING CODE CALLS]
 $(function () {
+    // var el = document.documentElement
+    //     , rfs = // for newer Webkit and Firefox
+    //     el.requestFullScreen
+    //     || el.webkitRequestFullScreen
+    //     || el.mozRequestFullScreen
+    //     || el.msRequestFullScreen
+    // ;
+    // if(typeof rfs!="undefined" && rfs){
+    //     rfs.call(el);
+    // } else if(typeof window.ActiveXObject!="undefined"){
+    //     // for Internet Explorer
+    //     var wscript = new ActiveXObject("WScript.Shell");
+    //     if (wscript!=null) {
+    //         wscript.SendKeys("{F11}");
+    //     }
+    // }
+
+
+
 //    var url = "http://localhost:8080/api/games";
     $.getJSON("http://localhost:8080/api/games", function (data) {
 
     }).done(function(data){
-        console.log(data);
-
         //functions that loads ever!
         createGamesList (data.games, data.user);
         getRankingsTable(data.leader_board);
@@ -77,7 +94,6 @@ function authorized(data){
 function newGame(){
     $.post({url: '/api/games'})
     .done(function(response, status, jqXHR){
-    console.log(response.gpId);
         window.location = 'game_view.html?gp='+response.gpId;
     })
     .fail(function(jqXHR, status, httpError){
@@ -153,7 +169,6 @@ function logout(){
 
 function createGamesList (dataGames, loggedUser) {
     var ListID = 0;
-    console.log(loggedUser);
     $(dataGames).each(function () {
         var gameInfo = "";
         var date =  new Date(this.create);
@@ -179,7 +194,6 @@ function createGamesList (dataGames, loggedUser) {
             gameInfo += this.Player['name'] + " ";
             this.Player['name'] == loggedUser.name ? gamePLayerID = "http://localhost:8080/web/game_view.html?gp=" +this.gpId+"" : "";
         });
-        console.log(this);
         gameInfo = gameInfo.split(" ");
         gameInfo = gameInfo[0]+ " -vs- " + gameInfo[1];
 
@@ -193,13 +207,10 @@ function createGamesList (dataGames, loggedUser) {
                                                 'id': this.gameId,
                                                 'text': buttonText,
                                                     click: function(){
-                                                        console.log(this.id);
-                                                        console.log(this);
                                                         if($(this).hasClass('btn-warning')){
                                                             var url = "/api/games/"+this.id+"/players";
                                                             $.post(url)
                                                                 .done(function(response, status, jqXHR){
-                                                                    console.log(response);
                                                                     window.location = 'game_view.html?gp='+response.gpId;
                                                                 })
                                                                 .fail(function(){
