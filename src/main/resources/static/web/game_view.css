@@ -161,12 +161,12 @@ td:hover{
     background-size: cover;
 }
 
-.modal-content{
+.modal-content1{
     background-color: transparent;
     width:100%;
 }
 
-.modal-dialog{
+.modal-dialog1{
     width: 80%;
 }
 #modalShipsGrid, #hangar{
@@ -193,7 +193,7 @@ td:hover{
     border-radius: 5px;
 
  }
- .modal-body{
+ .modal-body1{
     display:flex;
     flex-direction:row;
     justify-content: space-around;
@@ -330,6 +330,22 @@ td:hover{
     width: 20%;
 }
 
+.modal-content2{
+    background-color: rgba(0,255,255, 0.8);
+    margin-top: 15vh;
+    border-color: black;
+}
 
-
+.optionsButton{
+    background: transparent;
+    border-color: black;
+    font-size: 20px;
+    font-family: myFirstFont, fantasy;
+    color: black;
+}
+.flex-center2{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 

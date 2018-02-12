@@ -49,28 +49,50 @@
                 <div id="menu">
                     <a class="btn btn-danger" id="placeShipsBtn" data-toggle="modal" href="#myModal" style="display: none;">Place Ships</a>
                     <a class="btn btn-danger" id="exitGame" href="../web/games.html">Exit Game</a>
+                    <a class="btn btn-danger" data-toggle="modal" href="#optionsModal" id="optionsButton" href="../web/games.html">Options</a>
 
-                    <img src="resources/svgIcons/mute.svg" style="display: none;" alt="speaker" id="speaker" onclick="myPlay('warAudio', true)">
-                    <img src="resources/svgIcons/speaker.svg" alt="mutate" id="mutate" onclick="mutate('warAudio')">
+
                 </div>
             </article>
         </section>
     </main>
 
     <section class="modal fade" id="myModal" role="dialog" ondragover = allowDrop(event) ondrop = drop(event)>
-        <div class="modal-dialog" ondragover = allowDrop(event) ondrop = drop(event)>
+        <div class="modal-dialog modal-dialog1" ondragover = allowDrop(event) ondrop = drop(event)>
             <!-- Modal content-->
-            <div class="modal-content" ondragover = allowDrop(event) ondrop = drop(event)>
+            <div class="modal-content modal-content1" ondragover = allowDrop(event) ondrop = drop(event)>
                 <div class="modal-header" ondragover = allowDrop(event) ondrop = drop(event)>
                     <h4 class="modal-title" ondragover = allowDrop(event) ondrop = drop(event)>RADAR</h4>
                 </div>
-                <div class="modal-body" ondragover = allowDrop(event) ondrop = drop(event)>
+                <div class="modal-body modal-body1" ondragover = allowDrop(event) ondrop = drop(event)>
                     <table id="modalShipsGrid" style="text-align:center;"></table>
                     <aside id="hangar"></aside>
                 </div>
                 <div class="modal-footer" ondragover = allowDrop(event) ondrop = drop(event)>
                     <button class="btn-lg btn-success" id="ships-confirm" data-dismiss="modal" ondragover = allowDrop(event) ondrop = drop(event)>Confirm</button>
                     <button class="btn-lg btn-danger " id="ships-cancel" data-dismiss="modal" ondragover = allowDrop(event) ondrop = drop(event)>&times;</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="modal fade" id="optionsModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content modal-content2">
+                <div class="modal-body">
+
+                    <div class="row" id="options">
+                        <div class="col-lg-12 col-md-12 col-sm-12 flex-center2">
+                            <img src="resources/svgIcons/mute.svg" style="display: none;" alt="speaker" id="speaker" onclick="myPlay('warAudio', true)">
+                            <img src="resources/svgIcons/speaker.svg" alt="mutate" id="mutate" onclick="mutate('warAudio')">
+                        </div>
+                    </div>
+                    <div class="row" id="options4">
+                        <div class="col-lg-12 col-md-12 col-sm-12 flex-center2">
+                            <button class="btn btn-info optionsButton" onclick="toggleFullScreen()">FullScreen on/off</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
