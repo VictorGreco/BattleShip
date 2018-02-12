@@ -14,31 +14,34 @@ a{
     display: flex;
     justify-content: space-between;
 }
-.modal-dialog{
+.modal-dialog1{
     width: 400px;
 }
-.modal-body{
+.modal-dialog2{
+    width: 400px;
+}
+.modal-body1{
     display:flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
 }
-.modal-body:first-child{
+.modal-body1:first-child{
     margin: 15px;
 }
 
-.modal-body label{
+.modal-body1 label{
     width: 70%;
     margin: 10px;
 }
-.modal-body label input{
+.modal-body1 label input{
     background: rgba(0 ,0 ,0 ,0.8);
     color: white;
     border:1px solid rgb(23, 177, 246);
 
 }
-.modal-body button{
+.modal-body1 button{
     width: 30%;
     margin: 5px;
 }
@@ -90,10 +93,16 @@ table.dataTable, table.dataTable.no-footer{
     background-size: cover;
     background: url('resources/login_background3.jpg') no-repeat fixed;
 }
-.modal-content{
+.modal-content1{
     background-image: url('resources/login_modal_background.png');
     background-size:contain;
     margin-top: 15vh;
+}
+
+.modal-content2{
+    background-color: rgba(0,255,255, 0.8);
+    margin-top: 15vh;
+    border-color: black;
 }
 .mainTitle{
     display: flex;
@@ -156,7 +165,7 @@ table.dataTable, table.dataTable.no-footer{
 }
 
 #versionMessage{
-    margin-top: 5vh;
+    margin-top: 10vh;
 }
 .flex-center2{
     display: flex;
@@ -164,12 +173,12 @@ table.dataTable, table.dataTable.no-footer{
     align-items: center;
 }
 
-#options{
+#options3{
     margin-top: 20vh;
 }
 #speaker, #mutate, #speaker2, #mutate2{
     height: auto;
-    width: 5%;
+    width: 25%;
 }
 
 @keyframes titleAnimation {
@@ -178,9 +187,25 @@ table.dataTable, table.dataTable.no-footer{
 }
 @keyframes loginMenuAnimation {
     0% {height: 0;}
-    100% {height: 70px;}
+    100% {
+        height: 70px;
+    }
 }
 
 ::-webkit-scrollbar {
     display: none;
+}
+
+.optionsButton2{
+    background: transparent;
+    border-color: white;
+    font-size: 20px;
+    font-family: myFirstFont, fantasy;
+}
+.optionsButton{
+    background: transparent;
+    border-color: black;
+    font-size: 20px;
+    font-family: myFirstFont, fantasy;
+    color: black;
 }
