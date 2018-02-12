@@ -3,7 +3,7 @@
 $(function () {
 
 //    var url = "http://localhost:8080/api/games";
-    $.getJSON("http://localhost:8080/api/games", function (data) {
+    $.getJSON("https://fathomless-hamlet-26828.herokuapp.com/api/games", function (data) {
 
     }).done(function(data){
         //functions that loads ever!
@@ -189,7 +189,7 @@ function createGamesList (dataGames, loggedUser) {
                 buttonText = 'Play Game';
             }
             gameInfo += this.Player['name'] + " ";
-            this.Player['name'] == loggedUser.name ? gamePLayerID = "http://localhost:8080/web/game_view.html?gp=" +this.gpId+"" : "";
+            this.Player['name'] == loggedUser.name ? gamePLayerID = "https://fathomless-hamlet-26828.herokuapp.com/web/game_view.html?gp=" +this.gpId+"" : "";
         });
         gameInfo = gameInfo.split(" ");
         gameInfo = gameInfo[0]+ " -vs- " + gameInfo[1];

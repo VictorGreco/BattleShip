@@ -150,7 +150,7 @@ $(function(){
     var url = "";
     url == "" ? url = window.location.href.split('=') : "";
     gpValue = url[1];
-    url = "http://localhost:8080/api/game_view/"+ gpValue+"";
+    url = "https://fathomless-hamlet-26828.herokuapp.com/api/game_view/"+ gpValue+"";
 
 //[STARTS RANDOM BACKGROUND]
     var images = ['background-image1.jpg', 'background-image3.jpg', 'background-image4.jpg'];
