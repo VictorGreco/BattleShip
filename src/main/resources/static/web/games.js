@@ -1,9 +1,10 @@
 
 //[START WORKING CODE CALLS]
 $(function () {
+    var url = window.location.href.split("/web")[0];
 
 //    var url = "http://localhost:8080/api/games";
-    $.getJSON("https://fathomless-hamlet-26828.herokuapp.com/api/games", function (data) {
+    $.getJSON(url+"/api/games", function (data) {
 
     }).done(function(data){
         //functions that loads ever!
@@ -189,7 +190,8 @@ function createGamesList (dataGames, loggedUser) {
                 buttonText = 'Play Game';
             }
             gameInfo += this.Player['name'] + " ";
-            this.Player['name'] == loggedUser.name ? gamePLayerID = "https://fathomless-hamlet-26828.herokuapp.com/web/game_view.html?gp=" +this.gpId+"" : "";
+            var url = window.location.href.split("/web")[0];
+            this.Player['name'] == loggedUser.name ? gamePLayerID = url + "/web/game_view.html?gp=" +this.gpId+"" : "";
         });
         gameInfo = gameInfo.split(" ");
         gameInfo = gameInfo[0]+ " -vs- " + gameInfo[1];

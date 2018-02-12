@@ -147,10 +147,11 @@ function drop(ev, finalPositions) {
        }
 //end of drag and drop features
 $(function(){
+    var url2 = window.location.href.split("/web")[0];
     var url = "";
     url == "" ? url = window.location.href.split('=') : "";
     gpValue = url[1];
-    url = "https://fathomless-hamlet-26828.herokuapp.com/api/game_view/"+ gpValue+"";
+    url = url2+"/api/game_view/"+ gpValue+"";
 
 //[STARTS RANDOM BACKGROUND]
     var images = ['background-image1.jpg', 'background-image3.jpg', 'background-image4.jpg'];
