@@ -1,24 +1,6 @@
 
 //[START WORKING CODE CALLS]
 $(function () {
-    // var el = document.documentElement
-    //     , rfs = // for newer Webkit and Firefox
-    //     el.requestFullScreen
-    //     || el.webkitRequestFullScreen
-    //     || el.mozRequestFullScreen
-    //     || el.msRequestFullScreen
-    // ;
-    // if(typeof rfs!="undefined" && rfs){
-    //     rfs.call(el);
-    // } else if(typeof window.ActiveXObject!="undefined"){
-    //     // for Internet Explorer
-    //     var wscript = new ActiveXObject("WScript.Shell");
-    //     if (wscript!=null) {
-    //         wscript.SendKeys("{F11}");
-    //     }
-    // }
-
-
 
 //    var url = "http://localhost:8080/api/games";
     $.getJSON("http://localhost:8080/api/games", function (data) {
@@ -40,6 +22,21 @@ $(function () {
 //[ENDS WORKING CODE CALLS]
 
 //[START FUNCTION DESCRIPTIONS]
+
+// function toggleFullScreen() {
+//     var doc = window.document;
+//     var docEl = doc.documentElement;
+//
+//     var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+//     var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+//
+//     if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+//         requestFullScreen.call(docEl);
+//     }
+//     else {
+//         cancelFullScreen.call(doc);
+//     }
+// }
 
 function mutate(audioId){
     var x = document.getElementById(audioId);
