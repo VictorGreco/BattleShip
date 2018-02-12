@@ -12,8 +12,6 @@
     <link href="https://fonts.googleapis.com/css?family=Ruslan+Display" rel="stylesheet">
     <link rel="stylesheet" href="game_view.css">
 
-
-
 </head>
 <body>
     <audio id="warAudio">
@@ -28,7 +26,7 @@
                 </div>
             </article>
             <article class="col-lg-6 userInterface">
-                <div id="displayPlayers" class="displayPlayers"></div>
+                <div id="gameStatus" class="displayPlayers"></div>
                 <div id="chat">
                     <div class="chat" id="chatPlayers">
                         <div class="chatTitles">chat</div>
@@ -49,9 +47,8 @@
                 <div id="menu">
                     <a class="btn btn-danger" id="placeShipsBtn" data-toggle="modal" href="#myModal" style="display: none;">Place Ships</a>
                     <a class="btn btn-danger" id="exitGame" href="../web/games.html">Exit Game</a>
-                    <a class="btn btn-danger" data-toggle="modal" href="#optionsModal" id="optionsButton" href="../web/games.html">Options</a>
-
-
+                    <a class="btn btn-danger" data-toggle="modal" href="#optionsModal" id="optionsButton">Options</a>
+                    <a class="btn btn-danger" data-toggle="modal" href="#rulesModal" id="rulesButton">Rules</a>
                 </div>
             </article>
         </section>
@@ -93,6 +90,26 @@
                             <button class="btn btn-info optionsButton" onclick="toggleFullScreen()">FullScreen on/off</button>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="modal fade" id="rulesModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content modal-content2">
+                <div class="modal-body">
+                    <ol class="rules">
+                        <li>CLICK on "PLACE SHIPS" button to place your ships.</li>
+                        <li>Drag and drop the ships to the grid and click on it to rotate.</li>
+                        <li>If something seems a bug refresh the page.</li>
+                        <li>On your turn select 3 cells of the upper grid and click on a selected cell to deselect it.</li>
+                        <li>Then if you confirm the pop-up the turn ends. You can reset your selection cancelling the pop-up.</li>
+                        <li>You win if you destroy all the opponent ships.</li>
+                        <li>Click outside of this window to hide it and GOOD LUCK!</li>
+                    </ol>
+
                 </div>
             </div>
         </div>

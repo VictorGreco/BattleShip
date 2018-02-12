@@ -11,8 +11,10 @@ body{
     align-items: center;
     height: 15vh;
     margin-top: 20px;
-}
-.ownerPlayer, .notOwnerPlayer, .vs{
+    padding-right:20px;
+    padding-left:20px;
+    border: 2px solid white;
+    border-radius: 30px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -22,22 +24,6 @@ body{
     color: white;
     font-family: 'Ruslan Display', cursive;
     font-size: 30px;
-}
-.ownerPlayer, .notOwnerPlayer{
-    padding-right:20px;
-    padding-left:20px;
-    border: 2px solid white;
-    border-radius: 30px;
-
-}
-.ownerPlayer{
-
-}
-.notOwnerPlayer{
-
-}
-.vs{
-
 }
 
 /*TABLES ROW -> 2 GRIDS: one with my ships & nemy salvoes and other with my slvoes*/
@@ -348,4 +334,7 @@ td:hover{
     justify-content: center;
     align-items: center;
 }
-
+.rules{
+    font-weight: bold;
+    font-size: 20px;
+}

@@ -215,6 +215,7 @@ $(function(){
         $.getJSON(url, function(data){
         })
         .done(function(data){
+            getGameStatus(data.OK);
             statusAllowed(data);
             myData = data;
         })
@@ -227,10 +228,11 @@ $(function(){
 //[END CALLS]
 
 function authorizedPage(data){
+       console.log(data);
     getGrid("myShipGrid");
     getGrid("notMySalvoGrid");
     getGrid("modalShipsGrid");
-    getPlayersInfo(data.OK);
+    getGameStatus(data.OK);
     statusAllowed(data);
     getHangar();
 }
@@ -592,25 +594,20 @@ $(data).each(function(){
     var divHeight = $('#systemMessage').css('height').split('p')[0];
     $('#systemMessage').scrollTop(divHeight+1);
 }
-function getPlayersInfo(data){
-   $(data.GamePlayers).each(function(){
-           if(data.id === this.id){
-               var ownerPlayer = this.Player["name"] + "(you)";
-               $('#displayPlayers').append($('<div>', {
-                                                "id": "ownerPlayer",
-                                                "class": "ownerPlayer",
-                                                }).append(ownerPlayer));
-           }else{
-               var otherPlayer = this.Player["name"];
-               $('#displayPlayers').append($('<div>',{
-                                                "id": "notOwnerPlayer",
-                                                "class": "notOwnerPlayer",
-                                                }).append(otherPlayer));
-           }
-     });
-     $("#displayPlayers > div:nth-child(1)").after($('<div>',{
-                                                    "id": "vs",
-                                                    "class": "vs",
-                                                    }).append(' -VS- '));
+function getGameStatus(data){
+    $('#gameStatus').html('');
+    var status = '';
+
+    data.gameStatus == 'w84UrShips' ? status = 'Place your ships' : '';
+    data.gameStatus == 'w84Opp' ? status = 'Waiting opponent' : '';
+    data.gameStatus == 'w84OppShips' ? status = 'Opponent placing ships' : '';
+    data.gameStatus == 'youPlay' ? status = 'your turn' : '';
+    data.gameStatus == 'OppPlay' ? status = "opponent's turn" : '';
+
+
+    $('#gameStatus').append($('<p>',{
+                                'class': 'notOwnerPlayer',
+    }).append(status));
+
 }
 })
