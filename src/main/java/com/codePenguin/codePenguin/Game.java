@@ -71,5 +71,3 @@ public class Game {
         this.allChatMessages = allChatMessages;
     }
 }
-
-
