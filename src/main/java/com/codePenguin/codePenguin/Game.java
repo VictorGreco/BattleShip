@@ -70,5 +70,7 @@ public class Game {
     public void setAllChatMessages(List<SingleMessage> allChatMessages) {
         this.allChatMessages = allChatMessages;
     }
+    
+    
 
 }
