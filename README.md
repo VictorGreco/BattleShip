@@ -44,7 +44,7 @@
 ## Table of Contents
 
 * [About the Project](#about-the-project)
-  * [Built With](#built-with)
+* [Built With](#built-with)
 * [Getting Started](#getting-started)
 * [Roadmap](#roadmap)
 * [Contributing](#contributing)
@@ -79,19 +79,19 @@ This project borns as a final project of my Java web developer Bootcamp. The ide
 
 Access to [battleship](https://ancient-headland-19532.herokuapp.com/web/games.html) game and register yourself with a valid email and password.
 
-<img src="images/signin.png" alt="Logo" width="80" height="80">
+<img src="images/signin.png" alt="signin">
 
 If you're already registered go to login button instead.
 
-<img src="images/login.png" alt="Logo" width="80" height="80">
+<img src="images/login.png" alt="login">
 
 You can stop musing or change to full screen by clicking the options button
 
-<img src="images/options.png" alt="Logo" width="80" height="80">
+<img src="images/options.png" alt="options">
 
 ### Once you register or login you will see all the ongoing games:
 
-<img src="images/login_view.png" alt="Logo" width="80" height="80">
+<img src="images/login_view.png" alt="login view">
 
 ### Being able to:
 
@@ -102,11 +102,11 @@ You can stop musing or change to full screen by clicking the options button
 
 ### start a game !
 
-<img src="images/game_view.png" alt="Logo" width="80" height="80">
+<img src="images/game_view.png" alt="game  view">
 
 ### place you spaceships !
 
-<img src="images/place_ships.png" alt="Logo" width="80" height="80">
+<img src="images/place_ships.png" alt="place ships">
 
 ### and take fun
 * Chatting in real time
@@ -144,7 +144,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Victor Greco - [linkedin-shield](https://www.linkedin.com/in/victor-greco/) - victorgreco263@gmail.com
+Victor Greco - [linkedin](https://www.linkedin.com/in/victor-greco/) - victorgreco263@gmail.com
 
 Project Link: [https://github.com/victorgreco/battleship](https://github.com/victorgreco/battleship)
 
